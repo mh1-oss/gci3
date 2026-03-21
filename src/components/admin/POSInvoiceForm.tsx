@@ -170,14 +170,14 @@ export default function POSInvoiceForm({ products }: { products: any[] }) {
             {items.length === 0 ? (
               <div className="py-12 text-center text-gray-300">لم يتم اختيار أي مواد بعد</div>
             ) : (
-              <div className="divide-y divide-gray-100 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              <div className="divide-y divide-gray-100 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {items.map((item, index) => (
-                  <div key={index} className="py-4 flex items-center justify-between">
+                  <div key={index} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex-1">
                       <div className="font-bold text-brand-navy">{item.title}</div>
                       <div className="text-xs text-gray-400">${item.price} للوحدة</div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
                       <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
                         <button onClick={() => updateQuantity(index, item.quantity - 1)} className="px-3 py-1 hover:bg-brand-red hover:text-white transition text-gray-600 border-l border-gray-200">-</button>
                         <span className="px-3 py-1 bg-white font-bold text-sm min-w-[30px] text-center">{item.quantity}</span>

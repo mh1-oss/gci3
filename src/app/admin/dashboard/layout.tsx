@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Package, Image as ImageIcon, Calculator, LogOut, Settings, Users, FileText, Layers } from "lucide-react";
+import { LayoutDashboard, Package, Image as ImageIcon, Calculator, LogOut, Settings, Users, FileText, Layers, Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 import { logoutAdmin } from "@/app/admin/actions";
 
@@ -12,7 +13,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigation = [
     { name: "الرئيسية", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -26,63 +27,95 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen flex bg-gray-50 font-arabic" dir="rtl">
+    <div className="min-h-screen flex bg-gray-50 font-arabic relative overflow-x-hidden" dir="rtl">
+      
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-brand-navy/60 z-40 lg:hidden backdrop-blur-sm transition-all duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
-      <div className="w-64 bg-brand-navy text-white shadow-xl flex flex-col fixed inset-y-0 right-0 z-10 transition-transform">
-        <div className="h-24 flex items-center justify-center border-b border-white/10 px-6">
-          <Link href="/">
-            <Logo />
+      <aside className={`fixed lg:sticky top-0 right-0 h-screen w-64 bg-brand-navy text-white shadow-2xl flex flex-col z-50 transition-all duration-300 ease-in-out
+        ${isSidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}`}>
+        
+        <div className="h-20 flex items-center justify-between border-b border-white/5 px-6 shrink-0 bg-brand-navy/50 backdrop-blur-md">
+          <Link href="/" onClick={() => setIsSidebarOpen(false)} className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-brand-red rounded-lg flex items-center justify-center font-bold text-lg">G</div>
+            <span className="font-bold tracking-wider text-xl font-sans">PAINTS</span>
           </Link>
+          <button 
+            className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
+        <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1.5 custom-scrollbar">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive
-                    ? "bg-brand-red text-white shadow-lg"
-                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                onClick={() => setIsSidebarOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                    ? "bg-brand-red text-white shadow-lg shadow-brand-red/20 scale-[1.02]"
+                    : "text-gray-400 hover:bg-white/5 hover:text-white"
                   }`}
               >
-                <item.icon className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400"}`} />
-                <span className="font-medium">{item.name}</span>
+                <item.icon className={`w-5 h-5 transition-colors ${isActive ? "text-white" : "text-gray-500 group-hover:text-white"}`} />
+                <span className="font-medium text-sm">{item.name}</span>
               </Link>
             );
           })}
-        </div>
+        </nav>
 
-        <div className="p-4 border-t border-white/10">
+        <div className="p-4 border-t border-white/5 bg-brand-navy/30">
           <button
             onClick={() => logoutAdmin()}
-            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-300 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+            className="flex items-center gap-3 px-4 py-3 w-full rounded-xl text-gray-400 hover:bg-red-500/10 hover:text-brand-red transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />
-            <span className="font-medium">تسجيل الخروج</span>
+            <span className="font-medium text-sm">تسجيل الخروج</span>
           </button>
         </div>
-      </div>
+      </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 mr-64 flex flex-col min-h-screen">
-        <header className="h-20 bg-white shadow-sm flex items-center justify-between px-8 sticky top-0 z-10 border-b border-gray-100">
-          <h1 className="text-xl font-bold text-brand-navy">لوحة التحكم</h1>
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-bold font-sans">
-              AD
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-gray-50">
+        <header className="h-16 lg:h-20 bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 border-b border-gray-100 min-w-0">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-xl text-brand-navy transition-colors bg-gray-50"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex flex-col">
+              <h1 className="text-sm lg:text-lg font-bold text-brand-navy leading-tight">لوحة التحكم</h1>
+              <span className="text-[10px] text-gray-400 font-medium lg:hidden">GCI Paints Admin</span>
             </div>
-            <div className="hidden md:block">
-              <div className="text-sm font-bold text-gray-900">المدير العام</div>
-              <div className="text-xs text-gray-500">admin@gcipaints.com</div>
+          </div>
+          
+          <div className="flex items-center gap-3 lg:gap-4 ml-0">
+            <div className="flex flex-col items-end hidden sm:flex">
+              <div className="text-xs lg:text-sm font-bold text-brand-navy">المدير العام</div>
+              <div className="text-[9px] lg:text-[10px] text-gray-400">admin@gcipaints.com</div>
+            </div>
+            <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-bold font-sans shadow-lg text-xs lg:text-sm ring-2 ring-white ring-offset-2">
+              AD
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-8 overflow-y-auto">
-          {children}
+        <main className="flex-1 p-4 lg:p-10 w-full max-w-full overflow-x-hidden bg-gray-50/50">
+          <div className="max-w-[1400px] mx-auto w-full">
+            {children}
+          </div>
         </main>
       </div>
 

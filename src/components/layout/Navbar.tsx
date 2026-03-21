@@ -51,8 +51,9 @@ export default function Navbar() {
             <CurrencySwitcher />
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile menu button & Currency Switcher */}
+          <div className="md:hidden flex items-center gap-2">
+            <CurrencySwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-brand-navy hover:text-brand-red focus:outline-none p-2 rounded-md hover:bg-red-50 transition-colors"
@@ -65,7 +66,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full">
+        <div className="md:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="px-4 pt-2 pb-6 space-y-2 shadow-inner bg-gray-50/50">
             {links.map((link) => (
               <Link

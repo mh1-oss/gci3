@@ -24,11 +24,11 @@ export default async function DashboardOverview() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-l from-brand-navy to-blue-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-brand-red opacity-20 transform -skew-x-12 translate-x-20"></div>
+      <div className="bg-gradient-to-l from-brand-navy to-blue-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="absolute right-0 top-0 bottom-0 w-32 sm:w-64 bg-brand-red opacity-10 sm:opacity-20 transform -skew-x-12 translate-x-10 sm:translate-x-20"></div>
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold mb-2 text-[#F1F1F1]">مرحباً بك في لوحة تحكم GCI للأصباغ</h2>
-          <p className="text-blue-100 max-w-2xl text-lg">
+          <h2 className="text-xl sm:text-3xl font-bold mb-2 text-[#F1F1F1]">مرحباً بك في لوحة تحكم GCI للأصباغ</h2>
+          <p className="text-blue-100 max-w-2xl text-sm sm:text-lg opacity-90">
             من هنا يمكنك إدارة المنتجات، المشاريع، إنشاء عروض الأسعار، ومتابعة التواصل مع العملاء بشكل كامل ودقيق.
           </p>
         </div>

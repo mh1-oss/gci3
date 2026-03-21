@@ -19,7 +19,7 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-right">
+      <table className="w-full text-right min-w-[700px] lg:min-w-full">
         <thead>
           <tr className="bg-gray-50 border-b border-gray-100">
             <th className="px-6 py-4 font-bold text-brand-navy">المنتج</th>
