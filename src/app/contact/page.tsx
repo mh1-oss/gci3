@@ -98,7 +98,7 @@ export default function ContactPage() {
                       type="text" 
                       name="name"
                       required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder:text-gray-400"
                       placeholder="أدخل اسمك الكريم"
                     />
                   </div>
@@ -107,7 +107,7 @@ export default function ContactPage() {
                     <input 
                       type="text" 
                       name="phone"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder:text-gray-400"
                       placeholder="رقم للتواصل السريع"
                     />
                   </div>
@@ -140,7 +140,7 @@ export default function ContactPage() {
                       name="message"
                       rows={5}
                       required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white resize-none text-gray-900 placeholder:text-gray-400"
                       placeholder="تفاصيل مشروعك أو استفسارك..."
                     ></textarea>
                   </div>
