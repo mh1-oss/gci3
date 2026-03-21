@@ -24,21 +24,24 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-brand-navy text-white min-h-[90vh] py-20 lg:py-28 flex items-center">
         {/* Abstract Paint Splatter Background */}
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute inset-0 opacity-20 pointer-events-none overflow-hidden">
           <motion.div 
             animate={{ scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-brand-red rounded-full mix-blend-multiply filter blur-3xl opacity-70"
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            style={{ willChange: "transform" }}
+            className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-brand-red rounded-full filter blur-3xl opacity-70"
           />
           <motion.div 
             animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"
+            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            style={{ willChange: "transform" }}
+            className="absolute top-[20%] left-[-10%] w-[400px] h-[400px] bg-blue-500 rounded-full filter blur-3xl opacity-50"
           />
           <motion.div 
             animate={{ scale: [1, 1.15, 1], rotate: [0, 10, 0] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-[-20%] right-[20%] w-[600px] h-[600px] bg-brand-red rounded-full mix-blend-multiply filter blur-3xl opacity-60"
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            style={{ willChange: "transform" }}
+            className="absolute bottom-[-20%] right-[20%] w-[600px] h-[600px] bg-brand-red rounded-full filter blur-3xl opacity-60"
           />
         </div>
 
@@ -188,8 +191,8 @@ export default function Home() {
       {/* Modern CTA */}
       <section className="relative py-24 bg-brand-navy overflow-hidden">
         <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'}}></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-red rounded-full filter blur-3xl opacity-50 animate-blob" style={{ willChange: "transform" }}></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500 rounded-full filter blur-3xl opacity-50 animate-blob animation-delay-2000" style={{ willChange: "transform" }}></div>
         
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
