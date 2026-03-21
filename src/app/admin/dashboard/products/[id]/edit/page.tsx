@@ -35,12 +35,12 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 text-right">اسم المنتج</label>
-              <input type="text" id="title" name="title" defaultValue={product.title} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" />
+              <input type="text" id="title" name="title" defaultValue={product.title} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 placeholder:text-gray-400" />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 text-right">القسم</label>
-              <select id="category" name="category" defaultValue={product.category || ""} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" dir="rtl">
+              <select id="category" name="category" defaultValue={product.category || ""} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900" dir="rtl">
                 {allCategories.map((cat) => (
                   <option key={cat.id} value={cat.name}>{cat.name}</option>
                 ))}
@@ -52,12 +52,12 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
             <div className="space-y-2">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 text-right">السعر (بالدولار)</label>
-              <input type="text" id="price" name="price" defaultValue={product.price || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" />
+              <input type="text" id="price" name="price" defaultValue={product.price || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 placeholder:text-gray-400" />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="stock" className="block text-sm font-medium text-gray-700 text-right">الكمية المتوفرة (المخزن)</label>
-              <input type="number" id="stock" name="stock" defaultValue={product.stock || "0"} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" />
+              <input type="number" id="stock" name="stock" defaultValue={product.stock || "0"} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900" />
             </div>
             
             <div className="space-y-2">
@@ -66,7 +66,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <ImageIcon className="h-5 w-5 text-gray-400" />
                 </div>
-                <input type="text" id="imageUrl" name="imageUrl" defaultValue={product.imageUrl || "/images/product.png"} className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none" dir="ltr" />
+                <input type="text" id="imageUrl" name="imageUrl" defaultValue={product.imageUrl || "/images/product.png"} className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
               </div>
             </div>
 
@@ -76,14 +76,14 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <LinkIcon className="h-5 w-5 text-gray-400" />
                 </div>
-                <input type="text" id="pdfUrl" name="pdfUrl" defaultValue={product.pdfUrl || ""} placeholder="/public/dummy-spec.pdf" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none" dir="ltr" />
+                <input type="text" id="pdfUrl" name="pdfUrl" defaultValue={product.pdfUrl || ""} placeholder="/public/dummy-spec.pdf" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 text-right">الوصف</label>
-            <textarea id="description" name="description" rows={4} defaultValue={product.description || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none resize-y" />
+            <textarea id="description" name="description" rows={4} defaultValue={product.description || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none resize-y text-gray-900 placeholder:text-gray-400" />
           </div>
 
           <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">

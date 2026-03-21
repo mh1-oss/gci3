@@ -44,27 +44,27 @@ export default function SettingsForm({ settings }: { settings: any }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">اسم الشركة</label>
-              <input type="text" name="companyName" defaultValue={settings.companyName || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" />
+              <input type="text" name="companyName" defaultValue={settings.companyName || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">البريد الإلكتروني للاتصال</label>
-              <input type="email" name="email" defaultValue={settings.email || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="email" name="email" defaultValue={settings.email || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">رقم الهاتف</label>
-              <input type="text" name="phone" defaultValue={settings.phone || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="text" name="phone" defaultValue={settings.phone || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">العنوان</label>
-              <input type="text" name="address" defaultValue={settings.address || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" />
+              <input type="text" name="address" defaultValue={settings.address || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">ساعات العمل</label>
-              <input type="text" name="workingHours" defaultValue={settings.workingHours || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" />
+              <input type="text" name="workingHours" defaultValue={settings.workingHours || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" />
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 text-right">سعر صرف الدولار (مثال: 1500)</label>
-              <input type="number" name="exchangeRate" defaultValue={settings.exchangeRate || "1500"} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="number" name="exchangeRate" defaultValue={settings.exchangeRate || "1500"} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
           </div>
         </div>
@@ -77,28 +77,28 @@ export default function SettingsForm({ settings }: { settings: any }) {
                 <Facebook className="w-4 h-4 text-blue-600" />
                 <span>فيسبوك</span>
               </label>
-              <input type="text" name="facebook" placeholder="https://facebook.com/..." defaultValue={settings.facebook || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="text" name="facebook" placeholder="https://facebook.com/..." defaultValue={settings.facebook || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 text-right">
                 <Instagram className="w-4 h-4 text-pink-600" />
                 <span>إنستغرام</span>
               </label>
-              <input type="text" name="instagram" placeholder="https://instagram.com/..." defaultValue={settings.instagram || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="text" name="instagram" placeholder="https://instagram.com/..." defaultValue={settings.instagram || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 text-right">
                 <MessageCircle className="w-4 h-4 text-green-600" />
                 <span>واتساب</span>
               </label>
-              <input type="text" name="whatsapp" placeholder="+964..." defaultValue={settings.whatsapp || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="text" name="whatsapp" placeholder="+964..." defaultValue={settings.whatsapp || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 text-right">
                 <Linkedin className="w-4 h-4 text-blue-700" />
                 <span>لينكد إن</span>
               </label>
-              <input type="text" name="linkedin" placeholder="https://linkedin.com/..." defaultValue={settings.linkedin || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none" dir="ltr" />
+              <input type="text" name="linkedin" placeholder="https://linkedin.com/..." defaultValue={settings.linkedin || ""} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
             </div>
           </div>
         </div>

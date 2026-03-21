@@ -52,7 +52,7 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
                       type="number" 
                       value={editValue} 
                       onChange={(e) => setEditValue(e.target.value)}
-                      className="w-20 px-2 py-1 border border-brand-red rounded outline-none"
+                      className="w-20 px-2 py-1 border border-brand-red rounded outline-none text-gray-900"
                       autoFocus
                     />
                   </div>

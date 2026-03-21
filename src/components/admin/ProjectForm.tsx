@@ -23,7 +23,7 @@ export default function ProjectForm({ project }: { project: any }) {
             type="text" 
             required
             defaultValue={project.title}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
           />
         </div>
 
@@ -34,7 +34,7 @@ export default function ProjectForm({ project }: { project: any }) {
             rows={4}
             defaultValue={project.description || ""}
             placeholder="وصف المشروع..."
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
           ></textarea>
         </div>
 
@@ -45,7 +45,7 @@ export default function ProjectForm({ project }: { project: any }) {
               name="category" 
               type="text" 
               defaultValue={project.category || ""}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
             />
           </div>
           <div className="space-y-2">
@@ -54,7 +54,7 @@ export default function ProjectForm({ project }: { project: any }) {
               name="imageUrl" 
               type="text" 
               defaultValue={project.imageUrl || ""}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-left"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-left text-gray-900 placeholder:text-gray-400"
             />
           </div>
         </div>

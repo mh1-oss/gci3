@@ -21,12 +21,12 @@ export default async function NewProductPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 text-right">اسم المنتج</label>
-              <input type="text" id="title" name="title" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" placeholder="مثال: أكريليك مطفي" />
+              <input type="text" id="title" name="title" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 placeholder:text-gray-400" placeholder="مثال: أكريليك مطفي" />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 text-right">القسم</label>
-              <select id="category" name="category" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" dir="rtl">
+              <select id="category" name="category" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900" dir="rtl">
                 {allCategories.map((cat) => (
                   <option key={cat.id} value={cat.name}>{cat.name}</option>
                 ))}
@@ -38,12 +38,12 @@ export default async function NewProductPage() {
 
             <div className="space-y-2">
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 text-right">السعر (بالدولار)</label>
-              <input type="text" id="price" name="price" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" placeholder="25.00" />
+              <input type="text" id="price" name="price" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 placeholder:text-gray-400" placeholder="25.00" />
             </div>
 
             <div className="space-y-2">
               <label htmlFor="stock" className="block text-sm font-medium text-gray-700 text-right">الكمية المتوفرة (المخزن)</label>
-              <input type="number" id="stock" name="stock" defaultValue="0" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none" />
+              <input type="number" id="stock" name="stock" defaultValue="0" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900" />
             </div>
             
             <div className="space-y-2">
@@ -52,7 +52,7 @@ export default async function NewProductPage() {
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <ImageIcon className="h-5 w-5 text-gray-400" />
                 </div>
-                <input type="text" id="imageUrl" name="imageUrl" defaultValue="/images/product.png" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none" dir="ltr" />
+                <input type="text" id="imageUrl" name="imageUrl" defaultValue="/images/product.png" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
               </div>
             </div>
 
@@ -62,14 +62,14 @@ export default async function NewProductPage() {
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                   <LinkIcon className="h-5 w-5 text-gray-400" />
                 </div>
-                <input type="text" id="pdfUrl" name="pdfUrl" placeholder="/public/dummy-spec.pdf" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none" dir="ltr" />
+                <input type="text" id="pdfUrl" name="pdfUrl" placeholder="/public/dummy-spec.pdf" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-left outline-none text-gray-900 placeholder:text-gray-400" dir="ltr" />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 text-right">الوصف</label>
-            <textarea id="description" name="description" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none resize-y" placeholder="وصف تفصيلي للمنتج..." />
+            <textarea id="description" name="description" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none resize-y text-gray-900 placeholder:text-gray-400" placeholder="وصف تفصيلي للمنتج..." />
           </div>
 
           <div className="flex justify-end gap-4 pt-4 border-t border-gray-100">

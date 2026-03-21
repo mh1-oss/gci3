@@ -35,7 +35,7 @@ export default function NewProjectPage() {
               type="text" 
               required
               placeholder="مثال: مجمع المنصور السكني"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
             />
           </div>
 
@@ -45,7 +45,7 @@ export default function NewProjectPage() {
               name="description" 
               rows={4}
               placeholder="شرح مبسط عن المشروع والمواد المستخدمة فيه..."
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
             ></textarea>
           </div>
 
@@ -56,7 +56,7 @@ export default function NewProjectPage() {
                 name="category" 
                 type="text" 
                 placeholder="مثال: مشاريع سكنية"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
@@ -65,7 +65,7 @@ export default function NewProjectPage() {
                 name="imageUrl" 
                 type="text" 
                 placeholder="رابط الصورة (URL)"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-left"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-left text-gray-900 placeholder:text-gray-400"
               />
             </div>
           </div>

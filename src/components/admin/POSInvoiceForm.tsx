@@ -108,7 +108,7 @@ export default function POSInvoiceForm({ products }: { products: any[] }) {
                 placeholder="ابحث عن منتج بالاسم أو القسم..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition"
+                className="w-full pr-12 pl-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
               />
 
               {searchTerm && filteredProducts.length > 0 && (
@@ -206,21 +206,21 @@ export default function POSInvoiceForm({ products }: { products: any[] }) {
                 type="text"
                 placeholder="اسم العميل"
                 required
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red text-gray-900 placeholder:text-gray-400"
                 value={customer.name}
                 onChange={e => setCustomer({ ...customer, name: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="رقم الهاتف"
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red text-gray-900 placeholder:text-gray-400"
                 value={customer.phone}
                 onChange={e => setCustomer({ ...customer, phone: e.target.value })}
               />
               <input
                 type="text"
                 placeholder="اسم المشروع / ملاحظات"
-                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red"
+                className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-brand-red text-gray-900 placeholder:text-gray-400"
                 value={customer.projectName}
                 onChange={e => setCustomer({ ...customer, projectName: e.target.value })}
               />

@@ -26,7 +26,7 @@ export default async function AdminProductsPage() {
             <input 
               type="text" 
               placeholder="ابحث عن منتج..." 
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy font-arabic text-right"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy font-arabic text-right text-gray-900 placeholder:text-gray-400"
               dir="rtl"
             />
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
