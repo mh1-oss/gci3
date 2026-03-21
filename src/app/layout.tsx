@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { siteSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { CurrencyProvider } from "@/context/CurrencyContext";
+import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 
 const inter = Inter({
@@ -40,6 +41,7 @@ export default async function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col overflow-x-hidden">
+        <NextTopLoader color="#E31837" showSpinner={false} height={3} shadow="0 0 10px #E31837,0 0 5px #E31837" />
         <CurrencyProvider initialExchangeRate={Number(exchangeRate)}>
           <PublicNavbar>
             <Navbar />
