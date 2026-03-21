@@ -23,6 +23,10 @@ const cairo = Cairo({
 export const metadata: Metadata = {
   title: "شركة أصباغ GCI | GCI Paints",
   description: "الموقع الرسمي لشركة أصباغ GCI - أحدث المنتجات والتصاميم المبتكرة في عالم الأصباغ",
+  icons: {
+    icon: "/logo.svg?v=1",
+    apple: "/logo.svg?v=1",
+  },
 };
 
 export default async function RootLayout({

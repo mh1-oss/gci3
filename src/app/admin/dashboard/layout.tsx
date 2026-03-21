@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Package, Image as ImageIcon, Calculator, LogOut, Settings, Users, FileText, Layers } from "lucide-react";
+import Logo from "@/components/ui/Logo";
 import { logoutAdmin } from "@/app/admin/actions";
 
 export default function DashboardLayout({
@@ -29,11 +30,10 @@ export default function DashboardLayout({
 
       {/* Sidebar */}
       <div className="w-64 bg-brand-navy text-white shadow-xl flex flex-col fixed inset-y-0 right-0 z-10 transition-transform">
-        <div className="h-20 flex items-center justify-center border-b border-white/10 px-6">
-          <div className="font-bold text-2xl tracking-tighter flex items-center gap-2">
-            <span className="text-brand-red text-3xl font-sans">GCI</span>
-            <span className="font-arabic text-white">للأصباغ</span>
-          </div>
+        <div className="h-24 flex items-center justify-center border-b border-white/10 px-6">
+          <Link href="/">
+            <Logo />
+          </Link>
         </div>
 
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
