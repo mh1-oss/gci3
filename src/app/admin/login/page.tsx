@@ -27,7 +27,7 @@ function LoginForm() {
                 type="email"
                 name="email"
                 required
-                className="appearance-none block w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all sm:text-sm"
+                className="appearance-none block w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all sm:text-sm text-gray-900 placeholder:text-gray-400"
                 placeholder="admin@gcipaints.com"
                 dir="ltr"
               />
@@ -42,7 +42,7 @@ function LoginForm() {
                 type="password"
                 name="password"
                 required
-                className="appearance-none block w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all sm:text-sm"
+                className="appearance-none block w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all sm:text-sm text-gray-900 placeholder:text-gray-400"
                 placeholder="••••••••"
                 dir="ltr"
               />
