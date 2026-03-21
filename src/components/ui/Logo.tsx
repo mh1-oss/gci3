@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 
-export default function Logo({ className = "" }: { className?: string }) {
+export default function Logo({ className = "", isDark = false }: { className?: string; isDark?: boolean }) {
   return (
     <div className={`flex items-center gap-2 group ${className}`}>
       {/* Premium Minimalist SVG Paint Drop / Abstract geometric mark */}
@@ -28,7 +28,8 @@ export default function Logo({ className = "" }: { className?: string }) {
         {/* Abstract Paint Drop / Petal overlaps */}
         <motion.path
           d="M50 0C50 0 10 30 10 60C10 82.0914 27.9086 100 50 100C72.0914 100 90 82.0914 90 60C90 30 50 0 50 0Z"
-          fill="url(#navyGradient)"
+          fill={isDark ? "white" : "url(#navyGradient)"}
+          fillOpacity={isDark ? 0.1 : 1}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -59,7 +60,7 @@ export default function Logo({ className = "" }: { className?: string }) {
       
       {/* Sleek Typography */}
       <div className="font-sans flex flex-col justify-center leading-none tracking-tight">
-        <div className="text-2xl font-black text-brand-navy group-hover:text-brand-red transition-colors duration-300 tracking-tighter">
+        <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-brand-navy'} group-hover:text-brand-red transition-colors duration-300 tracking-tighter`}>
           GCI<span className="text-brand-red font-light tracking-wide ml-1 text-xl">PAINTS</span>
         </div>
       </div>

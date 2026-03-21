@@ -43,8 +43,8 @@ export default function DashboardLayout({
         
         <div className="h-20 flex items-center justify-between border-b border-white/5 px-6 shrink-0 bg-brand-navy/50 backdrop-blur-md">
           <Link href="/" onClick={() => setIsSidebarOpen(false)} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-red rounded-lg flex items-center justify-center font-bold text-lg">G</div>
-            <span className="font-bold tracking-wider text-xl font-sans">PAINTS</span>
+
+            <Logo isDark={true} />
           </Link>
           <button 
             className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"

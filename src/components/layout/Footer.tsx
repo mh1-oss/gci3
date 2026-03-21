@@ -12,7 +12,7 @@ export default async function Footer() {
           
           <div className="col-span-1 lg:col-span-1">
           <Link href="/" className="flex items-center gap-2 mb-6">
-            <Logo />
+            <Logo isDark={true} />
           </Link>
           <p className="text-gray-400 leading-relaxed font-arabic mb-6 max-w-md">
               رواد صناعة الأصباغ والديكور في المنطقة. نقدم أحدث التقنيات وأجود أنواع الطلاء لجميع احتياجاتك.

@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/ui/Logo";
 import CurrencySwitcher from "@/components/ui/CurrencySwitcher";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +57,7 @@ export default function Navbar() {
             <CurrencySwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-brand-navy hover:text-brand-red focus:outline-none p-2 rounded-md hover:bg-red-50 transition-colors"
+              className="text-brand-navy hover:text-brand-red focus:outline-none p-2 rounded-md hover:bg-red-50 transition-colors z-50"
             >
               {isOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
             </button>
@@ -64,27 +65,41 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className="px-4 pt-2 pb-6 space-y-2 shadow-inner bg-gray-50/50">
-            {links.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`block px-4 py-3 rounded-xl text-base font-bold transition-colors ${
-                  pathname === link.href
-                    ? "text-white bg-brand-red shadow-md"
-                    : "text-brand-navy hover:text-brand-red hover:bg-red-50"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Mobile Menu with Framer Motion */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full overflow-hidden"
+          >
+            <div className="px-4 pt-4 pb-8 space-y-2 shadow-inner bg-gray-50/50">
+              {links.map((link, i) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ x: 20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <Link
+                    href={link.href}
+                    className={`block px-5 py-4 rounded-2xl text-lg font-bold transition-all ${
+                      pathname === link.href
+                        ? "text-white bg-brand-red shadow-lg shadow-brand-red/20 scale-[1.02]"
+                        : "text-brand-navy hover:text-brand-red hover:bg-white hover:shadow-sm"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
