@@ -119,7 +119,7 @@ export default function ContactPage() {
                     type="email" 
                     name="email"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder:text-gray-400"
                     placeholder="example@domain.com"
                   />
                 </div>
@@ -129,7 +129,7 @@ export default function ContactPage() {
                   <input 
                     type="text" 
                     name="subject"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all bg-gray-50 focus:bg-white text-gray-900 placeholder:text-gray-400"
                     placeholder="عنوان الرسالة الاستفسارية"
                   />
                 </div>
