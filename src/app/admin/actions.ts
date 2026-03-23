@@ -75,6 +75,13 @@ export async function sendMessage(formData: FormData) {
   };
 
   await db.insert(messages).values(data);
+  
+  // Notify all connected SSE clients immediately
+  try {
+    const { emitNewMessage } = await import("@/lib/messageEmitter");
+    emitNewMessage();
+  } catch {}
+  
   revalidatePath("/admin/dashboard/messages");
   return { success: true };
 }

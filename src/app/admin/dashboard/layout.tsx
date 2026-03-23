@@ -38,12 +38,11 @@ export default function DashboardLayout({
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 right-0 h-screen w-64 bg-brand-navy text-white shadow-2xl flex flex-col z-50 transition-all duration-300 ease-in-out
+      <aside className={`fixed top-0 right-0 h-screen w-64 bg-brand-navy text-white shadow-2xl flex flex-col z-50 transition-all duration-300 ease-in-out
         ${isSidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}`}>
         
         <div className="h-20 flex items-center justify-between border-b border-white/5 px-6 shrink-0 bg-brand-navy/50 backdrop-blur-md">
           <Link href="/" onClick={() => setIsSidebarOpen(false)} className="flex items-center gap-2">
-
             <Logo isDark={true} />
           </Link>
           <button 
@@ -86,7 +85,7 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-gray-50">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-gray-50 lg:mr-64 transition-all duration-300">
         <header className="h-16 lg:h-20 bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 border-b border-gray-100 min-w-0">
           <div className="flex items-center gap-3">
             <button 
