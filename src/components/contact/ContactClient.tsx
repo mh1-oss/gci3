@@ -44,7 +44,7 @@ export default function ContactClient({ settings }: { settings: any }) {
         <motion.div 
           variants={{
             hidden: { opacity: 0, y: 10 },
-            visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+            visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }
           }}
           className="text-center mb-16 font-arabic"
         >
@@ -64,7 +64,7 @@ export default function ContactClient({ settings }: { settings: any }) {
                   hidden: { opacity: 0, x: -10 },
                   visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
                 }}
-                whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-start gap-4 hover:shadow-xl hover:border-brand-red/10 transition-all duration-300 transform-gpu"
                 style={{ willChange: "transform, opacity" }}
               >
@@ -85,7 +85,7 @@ export default function ContactClient({ settings }: { settings: any }) {
           <motion.div 
             variants={{
               hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }
+              visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } }
             }}
             className="lg:col-span-2"
             style={{ willChange: "transform, opacity" }}
@@ -175,10 +175,10 @@ export default function ContactClient({ settings }: { settings: any }) {
                     </div>
                     
                     <motion.button 
-                      whileHover={{ scale: 1.01, backgroundColor: "#E31837" }}
+                      whileHover={{ y: -2, backgroundColor: "#E31837" }}
                       whileTap={{ scale: 0.98 }}
                       type="submit"
-                      className="w-full flex justify-center items-center gap-3 py-4 sm:py-5 px-8 bg-brand-navy text-white rounded-xl text-lg sm:text-xl font-bold transition-all duration-300 shadow-lg shadow-brand-navy/10 hover:shadow-brand-red/30 active:shadow-inner mt-4"
+                      className="w-full flex justify-center items-center gap-3 py-4 sm:py-5 px-8 bg-brand-navy text-white rounded-xl text-lg sm:text-xl font-bold transition-all duration-300 shadow-lg shadow-brand-navy/10 hover:shadow-brand-red/30 active:shadow-inner mt-4 transform-gpu"
                     >
                       <span>إرسال الرسالة الآن</span>
                       <Send className="w-5 h-5 rtl:-scale-x-100" />
