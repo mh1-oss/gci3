@@ -1,6 +1,7 @@
 import { addMessageListener, removeMessageListener } from "@/lib/messageEmitter";
 
 export const dynamic = "force-dynamic";
+export const runtime = "edge";
 
 export async function GET() {
   const encoder = new TextEncoder();

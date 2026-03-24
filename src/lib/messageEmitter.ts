@@ -11,19 +11,28 @@ declare global {
   var __messageListeners: Set<Listener> | undefined;
 }
 
-// Persist across hot reloads in dev
-if (!global.__messageListeners) {
-  global.__messageListeners = new Set();
+declare global {
+  // eslint-disable-next-line no-var
+  var __messageListeners: Set<Listener> | undefined;
+}
+
+// Support for both Node.js (global) and Edge (globalThis)
+const g = (typeof globalThis !== 'undefined' ? globalThis : global) as any;
+
+if (!g.__messageListeners) {
+  g.__messageListeners = new Set();
 }
 
 export function addMessageListener(fn: Listener) {
-  global.__messageListeners!.add(fn);
+  g.__messageListeners.add(fn);
 }
 
 export function removeMessageListener(fn: Listener) {
-  global.__messageListeners!.delete(fn);
+  g.__messageListeners.delete(fn);
 }
 
 export function emitNewMessage() {
-  global.__messageListeners!.forEach((fn) => fn());
+  if (g.__messageListeners) {
+    g.__messageListeners.forEach((fn: any) => fn());
+  }
 }
