@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function proxy(request: NextRequest) {
+export const runtime = 'experimental-edge';
+
+export async function middleware(request: NextRequest) {
   const isAdminDashboard = request.nextUrl.pathname.startsWith('/admin/dashboard');
   const token = request.cookies.get('admin_token')?.value;
 
