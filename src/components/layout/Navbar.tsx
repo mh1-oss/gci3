@@ -32,7 +32,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-4 font-arabic">
+          <div className="hidden min-[1001px]:flex items-center gap-4 font-arabic">
             <div className="flex items-center gap-2">
               {links.map((link) => (
                 <Link
@@ -53,7 +53,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button & Currency Switcher */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="min-[1001px]:hidden flex items-center gap-2">
             <CurrencySwitcher />
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -73,7 +73,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full overflow-hidden"
+            className="min-[1001px]:hidden bg-white border-t border-gray-100 shadow-xl font-arabic absolute w-full overflow-hidden"
           >
             <div className="px-4 pt-4 pb-8 space-y-2 shadow-inner bg-gray-50/50">
               {links.map((link, i) => (

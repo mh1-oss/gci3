@@ -167,10 +167,10 @@ export default function HomeClient() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {[
-              { title: "أصباغ داخلية", desc: "ألوان دافئة وعصرية تضفي جاذبية لغرفتك وقابلة للغسيل.", icon: Palette, color: "bg-orange-50 text-orange-600 hover:bg-orange-600 shadow-orange-500/10" },
-              { title: "أصباغ خارجية", desc: "حماية فائقة لواجهات المباني ضد أصعب الظروف المناخية.", icon: Shield, color: "bg-blue-50 text-blue-600 hover:bg-blue-600 shadow-blue-500/10" },
-              { title: "دهانات صناعية", desc: "حلول تقنية للمصانع والمنشآت المتخصصة تقاوم التآكل.", icon: PaintBucket, color: "bg-amber-50 text-amber-600 hover:bg-amber-600 shadow-amber-500/10" },
-              { title: "عوازل مقاومة", desc: "مواد عزل متطورة لمنع تسرب المياه والرطوبة بفاعلية دائمية.", icon: Droplet, color: "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 shadow-emerald-500/10" }
+              { title: "أصباغ داخلية", desc: "ألوان دافئة وعصرية تضفي جاذبية لغرفتك وقابلة للغسيل.", icon: Palette, color: "bg-orange-50 text-orange-600 group-hover:bg-orange-600 shadow-orange-500/10" },
+              { title: "أصباغ خارجية", desc: "حماية فائقة لواجهات المباني ضد أصعب الظروف المناخية.", icon: Shield, color: "bg-blue-50 text-blue-600 group-hover:bg-blue-600 shadow-blue-500/10" },
+              { title: "دهانات صناعية", desc: "حلول تقنية للمصانع والمنشآت المتخصصة تقاوم التآكل.", icon: PaintBucket, color: "bg-amber-50 text-amber-600 group-hover:bg-amber-600 shadow-amber-500/10" },
+              { title: "عوازل مقاومة", desc: "مواد عزل متطورة لمنع تسرب المياه والرطوبة بفاعلية دائمية.", icon: Droplet, color: "bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 shadow-emerald-500/10" }
             ].map((cat, i) => (
               <motion.div 
                 variants={fadeIn}
