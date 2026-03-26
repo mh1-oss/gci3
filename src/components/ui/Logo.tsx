@@ -58,10 +58,12 @@ export default function Logo({ className = "", isDark = false }: { className?: s
         />
       </motion.svg>
       
-      {/* Sleek Typography */}
-      <div className="font-sans flex flex-col justify-center leading-none tracking-tight">
-        <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-brand-navy'} group-hover:text-brand-red transition-colors duration-300 tracking-tighter`}>
-          AGT<span className="text-brand-red font-light tracking-wide ml-1 text-xl uppercase">Group</span>
+      <div className="flex flex-col justify-center leading-none tracking-tight font-arabic">
+        <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-brand-navy'} group-hover:text-brand-red transition-colors duration-300 tracking-tighter leading-none`}>
+          AGT
+        </div>
+        <div className={`text-[10px] font-bold ${isDark ? 'text-white/60' : 'text-gray-400'} group-hover:text-brand-red/60 transition-colors duration-300 whitespace-nowrap mt-1`}>
+          مجموعة الوليد للتجارة العامة
         </div>
       </div>
     </div>
