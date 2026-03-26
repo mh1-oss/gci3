@@ -53,7 +53,7 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
               initial="hidden"
               animate="visible"
               variants={staggerContainer}
-              className="font-arabic space-y-8 text-right flex flex-col items-start"
+              className="font-arabic space-y-8 text-center lg:text-right flex flex-col items-center lg:items-start"
               style={{ willChange: "transform, opacity" }}
             >
               <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium">
@@ -73,29 +73,29 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
               <motion.div variants={fadeIn} className="flex flex-wrap gap-4 pt-4 justify-center lg:justify-start w-full">
                 <Link
                   href="/products"
-                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-brand-red text-white rounded-lg text-lg font-bold hover:bg-red-700 transition-all shadow-[0_10px_30px_rgba(227,24,55,0.4)] hover:-translate-y-1 transform-gpu"
+                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-brand-red text-white rounded-lg text-lg font-bold hover:bg-red-700 transition-all shadow-[0_10px_30px_rgba(227,24,55,0.4)] hover:-translate-y-1 transform-gpu w-full sm:w-64"
                 >
                   تصفح المنتجات
                   <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-white/10 text-white border border-white/20 rounded-lg text-lg font-bold hover:bg-white/20 transition-all backdrop-blur-sm hover:-translate-y-1 transform-gpu"
+                  className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-white/10 text-white border border-white/20 rounded-lg text-lg font-bold hover:bg-white/20 transition-all backdrop-blur-sm hover:-translate-y-1 transform-gpu w-full sm:w-64"
                 >
                   اطلب استشارة مجانية
                 </Link>
               </motion.div>
 
               <motion.div variants={fadeIn} className="grid grid-cols-3 gap-6 pt-10 border-t border-white/10 transform-gpu w-full">
-                <div className="text-right">
+                <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-1">+25</div>
                   <div className="text-sm text-gray-400">عام من الخبرة</div>
                 </div>
-                <div className="text-right">
+                <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-1">10k+</div>
                   <div className="text-sm text-gray-400">عميل سعيد</div>
                 </div>
-                <div className="text-right">
+                <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-1">500+</div>
                   <div className="text-sm text-gray-400">درجة لونية</div>
                 </div>
@@ -227,16 +227,28 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
                   key={sub.id}
                   variants={fadeIn}
                   whileHover={{ scale: 1.05 }}
-                  className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-brand-red/10 transition-all duration-300 text-center flex flex-col items-center justify-center gap-4 h-48 w-full max-w-[240px] transform-gpu"
+                  className="w-full max-w-[240px]"
                 >
-                  <div className="w-full h-24 relative flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-500">
-                    {sub.logoUrl ? (
-                      <img src={sub.logoUrl} alt={sub.name} className="max-w-full max-h-full object-contain" />
-                    ) : (
-                      <Building2 className="w-12 h-12 text-gray-200" />
-                    )}
-                  </div>
-                  <span className="text-sm font-bold text-gray-400 group-hover:text-brand-navy transition-colors">{sub.name}</span>
+                  <Link 
+                    href={`/products?subsidiary=${sub.id}`}
+                    className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-brand-red/10 transition-all duration-300 text-center flex flex-col items-center justify-center gap-4 h-56 w-full transform-gpu"
+                  >
+                    <div className="w-full h-24 relative flex items-center justify-center md:grayscale group-hover:grayscale-0 transition-all duration-500">
+                      {sub.logoUrl ? (
+                        <img src={sub.logoUrl} alt={sub.name} className="max-w-full max-h-full object-contain" />
+                      ) : (
+                        <Building2 className="w-12 h-12 text-gray-200" />
+                      )}
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-sm font-bold text-gray-400 group-hover:text-brand-navy transition-colors">{sub.name}</span>
+                      {sub.description && (
+                        <p className="text-[10px] text-gray-400 mt-1 line-clamp-2 max-w-[180px] leading-relaxed">
+                          {sub.description}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
                 </motion.div>
               ))}
               
