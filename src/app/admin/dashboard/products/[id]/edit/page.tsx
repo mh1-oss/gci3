@@ -1,9 +1,9 @@
 import { db } from "@/db";
 import { products, categories as dbCategories } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
-import { updateProduct } from "@/app/admin/actions";
+import { updateProduct, getSubsidiaries } from "@/app/admin/actions";
 import Link from "next/link";
-import { ArrowRight, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
+import { ArrowRight, Image as ImageIcon, Link as LinkIcon, Building2 } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -13,6 +13,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   });
   
   const allCategories = await db.select().from(dbCategories).orderBy(desc(dbCategories.createdAt));
+  const allSubsidiaries = await getSubsidiaries();
 
   if (!product) {
     notFound();
@@ -48,6 +49,21 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
                   <option value={product.category || "عام"}>{product.category || "عام"}</option>
                 )}
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="subsidiaryId" className="block text-sm font-medium text-gray-700 text-right">الشركة المصنعة / التابعة</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <Building2 className="h-5 w-5 text-gray-400" />
+                </div>
+                <select id="subsidiaryId" name="subsidiaryId" defaultValue={product.subsidiaryId || ""} className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 appearance-none bg-white" dir="rtl">
+                  <option value="">لا يوجد (منتج عام للمجموعة)</option>
+                  {allSubsidiaries.map((sub) => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="space-y-2">

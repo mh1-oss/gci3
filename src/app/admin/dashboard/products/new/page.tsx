@@ -1,12 +1,14 @@
-import { createProduct } from "@/app/admin/actions";
+import { createProduct, getSubsidiaries } from "@/app/admin/actions";
 import Link from "next/link";
-import { ArrowRight, Image as ImageIcon, Link as LinkIcon } from "lucide-react";
+import { ArrowRight, Image as ImageIcon, Link as LinkIcon, Building2 } from "lucide-react";
 import { db } from "@/db";
 import { categories } from "@/db/schema";
 import { desc } from "drizzle-orm";
 
 export default async function NewProductPage() {
   const allCategories = await db.select().from(categories).orderBy(desc(categories.createdAt));
+  const allSubsidiaries = await getSubsidiaries();
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 font-arabic">
       <div className="flex items-center gap-4">
@@ -34,6 +36,21 @@ export default async function NewProductPage() {
                   <option value="عام">يرجى إضافة أقسام أولاً</option>
                 )}
               </select>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="subsidiaryId" className="block text-sm font-medium text-gray-700 text-right">الشركة المصنعة / التابعة</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <Building2 className="h-5 w-5 text-gray-400" />
+                </div>
+                <select id="subsidiaryId" name="subsidiaryId" className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent text-right outline-none text-gray-900 appearance-none bg-white" dir="rtl">
+                  <option value="">لا يوجد (منتج عام للمجموعة)</option>
+                  {allSubsidiaries.map((sub) => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="space-y-2">

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { products, categories, siteSettings, messages, quotes, quoteItems, projects } from "@/db/schema";
+import { products, categories, siteSettings, messages, quotes, quoteItems, projects, subsidiaries } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -49,6 +49,8 @@ export async function updateSettings(formData: FormData) {
     companyName: formData.get("companyName") as string,
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
+    phoneNational: formData.get("phoneNational") as string,
+    phoneGCI: formData.get("phoneGCI") as string,
     address: formData.get("address") as string,
     workingHours: formData.get("workingHours") as string,
     exchangeRate: formData.get("exchangeRate") as string,
@@ -56,12 +58,57 @@ export async function updateSettings(formData: FormData) {
     instagram: formData.get("instagram") as string,
     whatsapp: formData.get("whatsapp") as string,
     linkedin: formData.get("linkedin") as string,
+    showPrice: formData.get("showPrice") === "on" ? "true" : "false",
+    showStock: formData.get("showStock") === "on" ? "true" : "false",
     updatedAt: new Date(),
   };
 
   await db.update(siteSettings).set(data).where(eq(siteSettings.id, "main"));
   revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard/settings");
+}
+
+// Subsidiaries
+export async function getSubsidiaries() {
+  return await db.select().from(subsidiaries);
+}
+
+export async function createSubsidiary(formData: FormData) {
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const logoUrl = formData.get("logoUrl") as string;
+
+  await db.insert(subsidiaries).values({
+    name,
+    description,
+    logoUrl,
+  });
+
+  revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/");
+  redirect("/admin/dashboard/subsidiaries");
+}
+
+export async function updateSubsidiary(id: string, formData: FormData) {
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const logoUrl = formData.get("logoUrl") as string;
+
+  await db.update(subsidiaries).set({
+    name,
+    description,
+    logoUrl,
+  }).where(eq(subsidiaries.id, id));
+
+  revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/");
+  redirect("/admin/dashboard/subsidiaries");
+}
+
+export async function deleteSubsidiary(id: string) {
+  await db.delete(subsidiaries).where(eq(subsidiaries.id, id));
+  revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/");
 }
 
 // Contact Messages
@@ -159,6 +206,7 @@ export async function createProduct(formData: FormData) {
   const description = formData.get("description") as string;
   const imageUrl = formData.get("imageUrl") as string || "/images/product.png";
   const pdfUrl = formData.get("pdfUrl") as string;
+  const subsidiaryId = formData.get("subsidiaryId") as string;
 
   await db.insert(products).values({
     title,
@@ -168,6 +216,7 @@ export async function createProduct(formData: FormData) {
     description,
     imageUrl,
     pdfUrl,
+    subsidiaryId: subsidiaryId || null,
   });
 
   revalidatePath("/admin/dashboard/products");
@@ -184,6 +233,7 @@ export async function updateProduct(id: string, formData: FormData) {
   const description = formData.get("description") as string;
   const imageUrl = formData.get("imageUrl") as string || "/images/product.png";
   const pdfUrl = formData.get("pdfUrl") as string;
+  const subsidiaryId = formData.get("subsidiaryId") as string;
 
   const updateData: any = {
     title,
@@ -192,6 +242,7 @@ export async function updateProduct(id: string, formData: FormData) {
     description,
     imageUrl,
     pdfUrl,
+    subsidiaryId: subsidiaryId || null,
   };
 
   if (stock !== null) {

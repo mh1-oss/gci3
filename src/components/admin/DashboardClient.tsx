@@ -57,7 +57,7 @@ export default function DashboardClient({ stats }: { stats: Stat[] }) {
       >
         <div className="absolute right-0 top-0 bottom-0 w-64 bg-brand-red opacity-10 transform -skew-x-12 translate-x-20 group-hover:translate-x-10 transition-transform duration-1000"></div>
         <div className="relative z-10 transition-transform duration-500">
-          <h2 className="text-2xl sm:text-4xl font-bold mb-4 text-white">مرحباً بك في لوحة تحكم GCI</h2>
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 text-white">مرحباً بك في لوحة تحكم AGT</h2>
           <p className="text-blue-100 max-w-2xl text-lg sm:text-xl opacity-80 font-light leading-relaxed">
             من هنا يمكنك إدارة المنتجات، المشاريع، إنشاء عروض الأسعار، ومتابعة التواصل مع العملاء بشكل كامل ودقيق.
           </p>

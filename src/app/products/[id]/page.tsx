@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { products } from "@/db/schema";
+import { products, siteSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -11,12 +11,16 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   const productId = resolvedParams.id;
   
   const productData = await db.select().from(products).where(eq(products.id, productId)).limit(1);
+  const allSettings = await db.select().from(siteSettings).where(eq(siteSettings.id, "main")).limit(1);
 
   if (!productData || productData.length === 0) {
     notFound();
   }
 
   const product = productData[0];
+  const settings = allSettings[0] || { showPrice: "true", showStock: "true" };
+  const showPrice = settings.showPrice === "true";
+  const showStock = settings.showStock === "true";
 
   return (
     <div className="bg-brand-light min-h-screen py-16 font-arabic">
@@ -34,7 +38,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
             <div className="relative h-[400px] lg:h-full bg-gray-50 group flex items-center justify-center p-8">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
-                src={product.imageUrl || ""} 
+                src={product.imageUrl || "/images/product.png"} 
                 alt={product.title} 
                 className="w-full max-h-[500px] object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
               />
@@ -54,10 +58,12 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
                 <h1 className="text-3xl md:text-5xl font-extrabold text-brand-navy leading-tight">
                   {product.title}
                 </h1>
-                <PriceDisplay 
-                  priceUSD={product.price} 
-                  className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-2 rounded-xl text-2xl font-bold shadow-sm whitespace-nowrap mr-4" 
-                />
+                {showPrice && (
+                  <PriceDisplay 
+                    priceUSD={product.price} 
+                    className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-2 rounded-xl text-2xl font-bold shadow-sm whitespace-nowrap mr-4" 
+                  />
+                )}
               </div>
               
               <div className="h-1 w-20 bg-brand-red rounded-full mb-8"></div>
@@ -80,17 +86,19 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
                   <span className="text-gray-700 font-medium">متوفر بأحجام متنوعة (1 جالون، 5 جالون)</span>
                 </div>
                 
-                <div className="mt-4">
-                  {Number(product.stock) <= 0 ? (
-                    <span className="inline-flex items-center px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-bold font-arabic shadow-sm animate-pulse">
-                      نفدت الكمية
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl text-sm font-bold font-arabic shadow-sm">
-                      متوفر في المخزن
-                    </span>
-                  )}
-                </div>
+                {showStock && (
+                  <div className="mt-4">
+                    {Number(product.stock) <= 0 ? (
+                      <span className="inline-flex items-center px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-bold font-arabic shadow-sm animate-pulse">
+                        نفدت الكمية
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl text-sm font-bold font-arabic shadow-sm">
+                        متوفر في المخزن
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="bg-gray-50 border border-gray-100 p-6 rounded-2xl flex flex-col sm:flex-row gap-4 justify-between items-center mt-auto">

@@ -61,7 +61,7 @@ export default function Logo({ className = "", isDark = false }: { className?: s
       {/* Sleek Typography */}
       <div className="font-sans flex flex-col justify-center leading-none tracking-tight">
         <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-brand-navy'} group-hover:text-brand-red transition-colors duration-300 tracking-tighter`}>
-          GCI<span className="text-brand-red font-light tracking-wide ml-1 text-xl">PAINTS</span>
+          AGT<span className="text-brand-red font-light tracking-wide ml-1 text-xl uppercase">Group</span>
         </div>
       </div>
     </div>

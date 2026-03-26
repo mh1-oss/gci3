@@ -21,8 +21,8 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "شركة أصباغ GCI | GCI Paints",
-  description: "الموقع الرسمي لشركة أصباغ GCI - أحدث المنتجات والتصاميم المبتكرة في عالم الأصباغ",
+  title: "مجموعة الوليد للتجارة العامة | AGT Group",
+  description: "مجموعة الوليد للتجارة العامة (AGT) - الوكيل الحصري لأجود أنواع الأصباغ والمنتجات الإنشائية",
   icons: {
     icon: "/logo.svg?v=1",
     apple: "/logo.svg?v=1",
@@ -44,7 +44,7 @@ export default async function RootLayout({
       className={`${inter.variable} ${cairo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col overflow-x-hidden">
+      <body className="min-h-full flex flex-col overflow-x-hidden transition-colors duration-300">
         <NextTopLoader color="#E31837" showSpinner={false} height={3} shadow="0 0 10px #E31837,0 0 5px #E31837" />
         <CurrencyProvider initialExchangeRate={Number(exchangeRate)}>
           <PublicNavbar>
@@ -61,4 +61,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

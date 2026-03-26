@@ -18,7 +18,8 @@ export default function ContactClient({ settings }: { settings: any }) {
 
   const contactCards = [
     { icon: MapPin, title: "العنوان", content: settings.address, bg: "bg-red-50", text: "text-brand-red" },
-    { icon: Phone, title: "الهاتف", content: settings.phone, bg: "bg-blue-50", text: "text-brand-navy", ltr: true },
+    { icon: Phone, title: "National Paints", content: settings.phoneNational, bg: "bg-red-50", text: "text-brand-red", ltr: true },
+    { icon: Phone, title: "GCI Paints", content: settings.phoneGCI, bg: "bg-blue-50", text: "text-brand-navy", ltr: true },
     { icon: Mail, title: "البريد الإلكتروني", content: settings.email, bg: "bg-red-50", text: "text-brand-red", ltr: true },
     { icon: Clock, title: "ساعات العمل", content: settings.workingHours, bg: "bg-blue-50", text: "text-brand-navy", pre: true },
   ];

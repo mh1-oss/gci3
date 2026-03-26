@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Package, Image as ImageIcon, Calculator, LogOut, Settings, Users, FileText, Layers, Menu, X } from "lucide-react";
+import { LayoutDashboard, Package, Image as ImageIcon, Calculator, LogOut, Settings, Users, FileText, Layers, Menu, X, Building2 } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 import { logoutAdmin } from "@/app/admin/actions";
 
@@ -19,6 +19,7 @@ export default function DashboardLayout({
     { name: "الرئيسية", href: "/admin/dashboard", icon: LayoutDashboard },
     { name: "المنتجات", href: "/admin/dashboard/products", icon: Package },
     { name: "المجاميع", href: "/admin/dashboard/categories", icon: Layers },
+    { name: "الشركات التابعة", href: "/admin/dashboard/subsidiaries", icon: Building2 },
     { name: "المشاريع", href: "/admin/dashboard/projects", icon: ImageIcon },
     { name: "المخزن (Inventory)", href: "/admin/dashboard/inventory", icon: Package },
     { name: "المحاسبة وعروض الأسعار", href: "/admin/dashboard/accounting", icon: Calculator },
@@ -96,14 +97,14 @@ export default function DashboardLayout({
             </button>
             <div className="flex flex-col">
               <h1 className="text-sm lg:text-lg font-bold text-brand-navy leading-tight">لوحة التحكم</h1>
-              <span className="text-[10px] text-gray-400 font-medium lg:hidden">GCI Paints Admin</span>
+              <span className="text-[10px] text-gray-400 font-medium lg:hidden">AGT Group Admin</span>
             </div>
           </div>
           
           <div className="flex items-center gap-3 lg:gap-4 ml-0">
             <div className="flex flex-col items-end hidden sm:flex">
               <div className="text-xs lg:text-sm font-bold text-brand-navy">المدير العام</div>
-              <div className="text-[9px] lg:text-[10px] text-gray-400">admin@gcipaints.com</div>
+              <div className="text-[9px] lg:text-[10px] text-gray-400">admin@agt-group.com</div>
             </div>
             <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-brand-navy flex items-center justify-center text-white font-bold font-sans shadow-lg text-xs lg:text-sm ring-2 ring-white ring-offset-2">
               AD

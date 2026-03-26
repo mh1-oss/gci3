@@ -7,6 +7,14 @@ export const profiles = pgTable("profiles", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
+export const subsidiaries = pgTable("subsidiaries", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  logoUrl: text("logo_url"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
 export const posts = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull(),
@@ -33,6 +41,7 @@ export const products = pgTable("products", {
   price: decimal("price", { precision: 10, scale: 2 }).default("0"),
   stock: decimal("stock", { precision: 10, scale: 2 }).default("0"),
   pdfUrl: text("pdf_url"),
+  subsidiaryId: uuid("subsidiary_id").references((): AnyPgColumn => subsidiaries.id, { onDelete: "set null" }), // Link to subsidiary
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
@@ -98,10 +107,12 @@ export const messages = pgTable("messages", {
 
 export const siteSettings = pgTable("site_settings", {
   id: text("id").primaryKey().default("main"),
-  companyName: text("company_name").default("شركة أصباغ GCI"),
-  email: text("email").default("info@gcipaints.com"),
-  phone: text("phone").default("+123 456 7890"),
-  address: text("address").default("المنطقة الصناعية، الشارع الرئيسي"),
+  companyName: text("company_name").default("مجموعة الوليد للتجارة العامة (AGT)"),
+  email: text("email").default("info@agt-group.com"),
+  phone: text("phone").default("+964 000 000 0000"), // Main/Old phone
+  phoneNational: text("phone_national").default("+964 000 000 0000"), // National Paints
+  phoneGCI: text("phone_gci").default("+964 000 000 0000"), // GCI Paints
+  address: text("address").default("العراق، بغداد"),
   workingHours: text("working_hours").default("السبت - الخميس: 8:00 صباحاً - 5:00 مساءً"),
   exchangeRate: decimal("exchange_rate", { precision: 10, scale: 2 }).default("1500"),
   facebook: text("facebook"),
@@ -109,5 +120,7 @@ export const siteSettings = pgTable("site_settings", {
   whatsapp: text("whatsapp"),
   linkedin: text("linkedin"),
   maintenanceMode: text("maintenance_mode").default("false"),
+  showPrice: text("show_price").default("true"),
+  showStock: text("show_stock").default("true"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });

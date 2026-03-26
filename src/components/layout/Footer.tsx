@@ -15,14 +15,14 @@ export default async function Footer() {
             <Logo isDark={true} />
           </Link>
           <p className="text-gray-400 leading-relaxed font-arabic mb-6 max-w-md">
-              رواد صناعة الأصباغ والديكور في المنطقة. نقدم أحدث التقنيات وأجود أنواع الطلاء لجميع احتياجاتك.
+              الوكيل الحصري والرواد في مجال الأصباغ والديكور. مجموعة الوليد للتجارة العامة تقدم لكم أجود الحلول الإنشائية والجمالية.
           </p>
           </div>
 
           <div>
             <h4 className="text-lg font-bold mb-4 text-gray-100">روابط سريعة</h4>
             <ul className="space-y-3">
-              <li><Link href="/about" className="text-gray-400 hover:text-brand-red transition-colors">من نحن</Link></li>
+              <li><Link href="/" className="text-gray-400 hover:text-brand-red transition-colors">الرئيسية</Link></li>
               <li><Link href="/products" className="text-gray-400 hover:text-brand-red transition-colors">منتجاتنا</Link></li>
               <li><Link href="/projects" className="text-gray-400 hover:text-brand-red transition-colors">مشاريعنا</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-brand-red transition-colors">اتصل بنا</Link></li>
@@ -32,10 +32,10 @@ export default async function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-4 text-gray-100">خدماتنا</h4>
             <ul className="space-y-3">
-              <li><Link href="#" className="text-gray-400 hover:text-brand-red transition-colors">أصباغ داخلية</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-brand-red transition-colors">أصباغ خارجية</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-brand-red transition-colors">دهانات صناعية</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-brand-red transition-colors">استشارات الألوان</Link></li>
+              <li><span className="text-gray-400">أصباغ داخلية وخارجية</span></li>
+              <li><span className="text-gray-400">دهانات صناعية وعوازل</span></li>
+              <li><span className="text-gray-400">استشارات معمارية</span></li>
+              <li><span className="text-gray-400">تجهيز مشاريع استراتيجية</span></li>
           </ul>
         </div>
 
@@ -46,9 +46,21 @@ export default async function Footer() {
                 <MapPin className="w-5 h-5 text-brand-red shrink-0" />
                 <span className="text-gray-400">{settings.address}</span>
               </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-brand-red shrink-0" />
-                <span className="text-gray-400" dir="ltr">{settings.phone}</span>
+              <li className="space-y-2">
+                <div className="flex items-center gap-3">
+                   <Phone className="w-5 h-5 text-brand-red shrink-0" />
+                   <div className="flex flex-col">
+                      <span className="text-[10px] text-gray-500 font-bold uppercase">National Paints</span>
+                      <span className="text-gray-400 text-sm" dir="ltr">{settings.phoneNational}</span>
+                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                   <Phone className="w-5 h-5 text-brand-red shrink-0" />
+                   <div className="flex flex-col">
+                      <span className="text-[10px] text-gray-500 font-bold uppercase">GCI Paints</span>
+                      <span className="text-gray-400 text-sm" dir="ltr">{settings.phoneGCI}</span>
+                   </div>
+                </div>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-brand-red shrink-0" />
