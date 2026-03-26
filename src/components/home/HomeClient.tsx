@@ -63,7 +63,7 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
 
               <motion.h1 variants={fadeIn} className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight drop-shadow-2xl transform-gpu">
                 أضف الحياة لمشروعك مع <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-red-400">أصباغ AGT</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-red-400">أصباغ مجموعة الوليد  </span>
               </motion.h1>
 
               <motion.p variants={fadeIn} className="text-xl text-gray-300 max-w-lg leading-relaxed font-light">
