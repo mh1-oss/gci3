@@ -7,6 +7,7 @@ type Currency = "USD" | "IQD";
 interface CurrencyContextType {
   currency: Currency;
   exchangeRate: number;
+  showPrice: boolean;
   setCurrency: (currency: Currency) => void;
   formatPrice: (priceUSD: number | string | null) => string;
 }
@@ -15,10 +16,12 @@ const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined
 
 export function CurrencyProvider({ 
   children, 
-  initialExchangeRate 
+  initialExchangeRate,
+  showPrice
 }: { 
   children: React.ReactNode;
   initialExchangeRate: number;
+  showPrice: boolean;
 }) {
   const [currency, setCurrency] = useState<Currency>("USD");
 
@@ -48,6 +51,7 @@ export function CurrencyProvider({
     <CurrencyContext.Provider value={{ 
       currency, 
       exchangeRate: initialExchangeRate, 
+      showPrice,
       setCurrency: handleSetCurrency, 
       formatPrice 
     }}>

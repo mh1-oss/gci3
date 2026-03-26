@@ -26,18 +26,20 @@ export default function ProductList({
   initialProducts, 
   dbCategories, 
   initialCategory,
+  initialSubsidiary,
   settings,
   subsidiaries = []
 }: { 
   initialProducts: Product[], 
   dbCategories: Category[], 
   initialCategory?: string,
+  initialSubsidiary?: string,
   settings: any,
   subsidiaries: Subsidiary[]
 }) {
   const { formatPrice } = useCurrency();
   const [selectedCategory, setSelectedCategory] = useState(initialCategory || "الكل");
-  const [selectedSubsidiary, setSelectedSubsidiary] = useState("all");
+  const [selectedSubsidiary, setSelectedSubsidiary] = useState(initialSubsidiary || "all");
   const [searchQuery, setSearchQuery] = useState("");
   
   const categories = ["الكل", ...dbCategories.map(c => c.name)];
@@ -49,8 +51,8 @@ export default function ProductList({
     return matchesCategory && matchesSubsidiary && matchesSearch;
   });
 
-  const showPrice = settings.showPrice === "true" || settings.showPrice === true;
-  const showStock = settings.showStock === "true" || settings.showStock === true;
+  const showPrice = settings.showPrice === "true";
+  const showStock = settings.showStock === "true";
 
   return (
     <div className="bg-brand-light min-h-screen py-16">

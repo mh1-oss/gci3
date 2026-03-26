@@ -4,7 +4,9 @@ import { useCurrency } from "@/context/CurrencyContext";
 import { DollarSign, Landmark } from "lucide-react";
 
 export default function CurrencySwitcher() {
-  const { currency, setCurrency } = useCurrency();
+  const { currency, setCurrency, showPrice } = useCurrency();
+
+  if (!showPrice) return null;
 
   return (
     <div className="flex items-center bg-gray-100 p-1 rounded-full border border-gray-200">

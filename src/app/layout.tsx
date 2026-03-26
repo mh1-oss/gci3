@@ -36,6 +36,7 @@ export default async function RootLayout({
 }>) {
   const settings = await db.select().from(siteSettings).where(eq(siteSettings.id, "main")).limit(1);
   const exchangeRate = settings[0]?.exchangeRate || "1500";
+  const showPrice = settings[0]?.showPrice === "true";
 
   return (
     <html
@@ -46,7 +47,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col overflow-x-hidden transition-colors duration-300">
         <NextTopLoader color="#E31837" showSpinner={false} height={3} shadow="0 0 10px #E31837,0 0 5px #E31837" />
-        <CurrencyProvider initialExchangeRate={Number(exchangeRate)}>
+        <CurrencyProvider initialExchangeRate={Number(exchangeRate)} showPrice={showPrice}>
           <PublicNavbar>
             <Navbar />
           </PublicNavbar>
