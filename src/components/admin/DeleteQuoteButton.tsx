@@ -1,17 +1,28 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Trash2, X, Check } from "lucide-react";
 import { deleteQuote } from "@/app/admin/actions";
 import { useState, useTransition } from "react";
 
 export default function DeleteQuoteButton({ id }: { id: string }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleDelete = () => {
     startTransition(async () => {
-      await deleteQuote(id);
-      setShowConfirm(false);
+      try {
+        const result = await deleteQuote(id);
+        if (result?.error) {
+          alert(result.error);
+        } else {
+          router.refresh();
+        }
+        setShowConfirm(false);
+      } catch (err) {
+        alert("حدث خطأ غير متوقع أثناء الحذف.");
+      }
     });
   };
 

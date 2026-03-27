@@ -1,9 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+
 import { db } from "./index";
 import { users } from "./schema";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
-
-dotenv.config({ path: ".env.local" });
 
 async function seed() {
   const email = process.env.ADMIN_EMAIL;

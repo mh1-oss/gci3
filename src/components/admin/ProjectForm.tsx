@@ -1,62 +1,71 @@
 "use client";
 
+import { useTransition } from "react";
 import { updateProject } from "@/app/admin/actions";
 import { Save } from "lucide-react";
-import { useTransition } from "react";
+import ImagePreview from "./ImagePreview";
 
 export default function ProjectForm({ project }: { project: any }) {
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    startTransition(() => updateProject(project.id, formData));
+    startTransition(async () => {
+      try {
+        const result = await updateProject(project.id, formData);
+        if (result?.error) {
+           alert(result.error);
+        }
+      } catch (err) {
+        alert("فشل الحفظ. تأكد من إعدادات Cloudflare R2.");
+      }
+    });
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+    <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 font-arabic">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">عنوان المشروع</label>
+          <label className="text-sm font-bold text-gray-700 text-right block">عنوان المشروع</label>
           <input 
             name="title" 
             type="text" 
             required
             defaultValue={project.title}
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-right text-gray-900 placeholder:text-gray-400"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700">وصف المشروع</label>
+          <label className="text-sm font-bold text-gray-700 text-right block">وصف المشروع</label>
           <textarea 
             name="description" 
             rows={4}
             defaultValue={project.description || ""}
             placeholder="وصف المشروع..."
-            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
+            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-right text-gray-900 placeholder:text-gray-400"
           ></textarea>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700">القسم / التصنيف</label>
+            <label className="text-sm font-bold text-gray-700 text-right block">القسم / التصنيف</label>
             <input 
               name="category" 
               type="text" 
               defaultValue={project.category || ""}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-gray-900 placeholder:text-gray-400"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-right text-gray-900 placeholder:text-gray-400"
             />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700">رابط صورة المشروع</label>
-            <input 
-              name="imageUrl" 
-              type="text" 
-              defaultValue={project.imageUrl || ""}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-brand-red outline-none transition text-left text-gray-900 placeholder:text-gray-400"
-            />
-          </div>
+          
+          <ImagePreview 
+            initialUrl={project.imageUrl} 
+            name="image" 
+            label="صورة المشروع" 
+            folder="projects/images"
+            helperText="أو ارفع صورة مباشرة (الأحدث يربح)"
+          />
         </div>
 
         <button 

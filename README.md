@@ -17,6 +17,8 @@
 ## 🛠 التقنيات المستخدمة (Tech Stack)
 
 - **Framework**: [Next.js 16.2.1 (Turbopack)](https://nextjs.org) - النسخة الأحدث والأسرع.
+- **Authentication**: [Auth.js (NextAuth v5)](https://authjs.dev) - تأمين لوحة التحكم بنظام الأدوار (RBAC).
+- **Storage**: [Cloudflare R2](https://www.cloudflare.com/products/r2/) - لتخزين الصور والملفات بشكل سحابي وآمن.
 - **Database Service**: Vercel Postgres / Neon.
 - **ORM**: [Drizzle ORM](https://orm.drizzle.team).
 - **Styling**: Tailwind CSS & Vanilla CSS.
@@ -27,44 +29,48 @@
 
 ### 1. المتطلبات (Prerequisites)
 - [Node.js](https://nodejs.org/) الإصدار 18 أو أحدث.
-- قاعدة بيانات Postgres (يمكن استخدام Vercel Postgres).
+- حساب Cloudflare R2 (اختياري، للرفع السحابي).
 
 ### 2. التثبيت (Installation)
-قم بتثبيت الحزم البرمجية:
 ```bash
 npm install
 ```
 
 ### 3. إعداد البيئة (Environment Setup)
-قم بإنشاء ملف `.env.local` في الجذر وأضف بيانات قاعدة البيانات:
+قم بإنشاء ملف `.env.local` وأضف المتغيرات التالية:
 ```env
-POSTGRES_URL=
-POSTGRES_PRISMA_URL=
-POSTGRES_URL_NON_POOLING=
-POSTGRES_USER=
-POSTGRES_HOST=
-POSTGRES_PASSWORD=
-POSTGRES_DATABASE=
+# Database
+DATABASE_URL="your_postgresql_url"
+
+# Authentication
+AUTH_SECRET="random_secret_here"
+ADMIN_EMAIL="admin@gtc-group.net"
+ADMIN_PASSWORD="secure_password"
+
+# Cloudflare R2
+R2_ACCOUNT_ID="your_id"
+R2_ACCESS_KEY_ID="your_access_key"
+R2_SECRET_ACCESS_KEY="your_secret_key"
+R2_BUCKET_NAME="agt-group"
+R2_PUBLIC_URL="https://pub-xxx.r2.dev"
 ```
 
-### 4. تشغيل خادم التطوير (Development Server)
+### 4. تهيئة الحساب الإداري (Initialize Admin)
+يجب تشغيل سكريبت التهيئة لإنشاء أول حساب مدير في قاعدة البيانات:
+```bash
+npx -y tsx src/db/seed-admin.ts
+```
+
+### 5. تشغيل خادم التطوير (Development Server)
 ```bash
 npm run dev
 ```
-افتح [http://localhost:3000](http://localhost:3000) لمشاهدة الموقع.
 
-## 📁 هيكلية الملفات المهمة (Key File Structure)
+## 📁 ملاحظات هامة (Important Notes)
 
-- `src/app`: بنية الصفحات (App Router).
-- `src/proxy.ts`: خادم الوكيل (Proxy) المسؤول عن حماية المسارات (بديل Middleware).
-- `src/db`: إعدادات ومخططات قاعدة البيانات (Drizzle Schema).
-- `src/components/admin`: مكونات لوحة التحكم.
-- `src/components/home`: مكونات الصفحة الرئيسية (Hero, Partners, Stats).
-
-## 📝 ملاحظات تقنية (Technical Notes)
-
-- **Proxy Convention**: يستخدم هذا المشروع اتفاقية `src/proxy.ts` بدلاً من `middleware.ts` وفقاً لتحديثات Next.js 16. ويعمل هذا الملف على بيئة Node.js Runtime لضمان التوافقية الكاملة.
-- **Database singleton**: يتم جلب إعدادات الموقع `siteSettings` من خلال ID ثابت وهو `main`.
+- **نظام الحماية (RBAC)**: تم حماية جميع العمليات الحساسة (إضافة، تعديل، حذف) من خلال فحص الصلاحيات داخل Server Actions.
+- **إدارة الوسائط (Latest Input Wins)**: تدعم لوحة التحكم رفع الملفات مباشرة إلى Cloudflare R2 أو كتابة روابط يدوية. النظام يعتمد دائماً على آخر مدخل قمت بإضافته، ويقوم بمسح الملفات القديمة من السحابة تلقائياً عند استبدالها.
+- **Proxy Convention**: تم استخدام `src/proxy.ts` لتأمين المسارات وفق معايير Next.js 16.
 
 ---
-تم التطوير بواسطة **Antigravity AI Agent** كجزء من تطوير مجموعة الوليد للتجارة العامة.
+تم التطوير بواسطة **Antigravity AI Agent** كجزء من تطوير مجموعة الوليد للتجارة العامة وتحويلها إلى منصة تجارية متكاملة.

@@ -1,18 +1,45 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Trash2, Edit2, Globe, Building2, Save, X, Image as ImageIcon } from "lucide-react";
 import { createSubsidiary, updateSubsidiary, deleteSubsidiary } from "@/app/admin/actions";
 import { motion, AnimatePresence } from "framer-motion";
+import ImagePreview from "./ImagePreview";
 
 export default function SubsidiaryList({ initialSubsidiaries }: { initialSubsidiaries: any[] }) {
+  const router = useRouter();
   const [subsidiaries, setSubsidiaries] = useState(initialSubsidiaries);
   const [isAdding, setIsAdding] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // Sync state if initialSubsidiaries changes (e.g. on server revalidation)
+  useEffect(() => {
+    setSubsidiaries(initialSubsidiaries);
+  }, [initialSubsidiaries]);
+
   // Filter out any invalid items
   const validSubsidiaries = subsidiaries.filter(s => s && s.id);
+
+  const handleAction = async (action: (formData: FormData) => Promise<any>, formData: FormData) => {
+    startTransition(async () => {
+      try {
+        const result = await action(formData);
+        if (result?.error) {
+          alert(result.error);
+        } else {
+          // If it was an add, we need to refresh the client state manually or wait for revalidation
+          if (editingId) setEditingId(null);
+          if (isAdding) setIsAdding(false);
+          // Refresh the router to get latest data
+          router.refresh(); 
+        }
+      } catch (err) {
+        alert("حدث خطأ أثناء الحفظ. تأكد من إعدادات التخزين.");
+      }
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -35,27 +62,47 @@ export default function SubsidiaryList({ initialSubsidiaries }: { initialSubsidi
               exit={{ opacity: 0, scale: 0.95 }}
               className="bg-white p-6 rounded-3xl border-2 border-dashed border-brand-red/30 flex flex-col gap-4"
             >
-              <form action={async (formData) => {
-                startTransition(async () => {
-                  await createSubsidiary(formData);
-                  setIsAdding(false);
-                });
-              }} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400">اسم الشركة</label>
-                  <input name="name" required className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none" />
+              <form action={(fd) => handleAction(createSubsidiary, fd)} className="space-y-4 font-arabic">
+                <div className="space-y-2">
+                  <label className="text-sm font-black text-brand-navy pr-1 block text-right">اسم الشركة</label>
+                  <input 
+                    name="name" 
+                    required 
+                    placeholder="أدخل اسم الشركة..."
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-2xl focus:ring-4 focus:ring-brand-navy/5 focus:border-brand-navy outline-none text-brand-navy font-bold transition-all text-right placeholder:text-gray-300" 
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400">الوصف</label>
-                  <textarea name="description" className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none resize-none" rows={3}></textarea>
+                <div className="space-y-2">
+                  <label className="text-sm font-black text-brand-navy pr-1 block text-right">الوصف</label>
+                  <textarea 
+                    name="description" 
+                    placeholder="وصف مختصر للشركة ونشاطها..."
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-2xl focus:ring-4 focus:ring-brand-navy/5 focus:border-brand-navy outline-none resize-none text-gray-700 min-h-[100px] transition-all text-right placeholder:text-gray-300" 
+                  />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-bold text-gray-400">رابط الشعار (Logo URL)</label>
-                  <input name="logoUrl" placeholder="/images/logos/..." className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none" />
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <button type="submit" disabled={isPending} className="flex-1 bg-brand-navy text-white py-2 rounded-xl font-bold hover:bg-black transition disabled:opacity-50">حفظ</button>
-                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl hover:bg-gray-200 transition">إلغاء</button>
+                
+                <ImagePreview 
+                  initialUrl={null} 
+                  name="logo" 
+                  label="شعار الشركة (Logo)" 
+                  folder="subsidiaries/logos"
+                />
+
+                <div className="flex gap-3 pt-4">
+                  <button 
+                    type="submit" 
+                    disabled={isPending} 
+                    className="flex-1 bg-brand-navy text-white py-3.5 rounded-2xl font-black text-lg hover:bg-black hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-brand-navy/10"
+                  >
+                    {isPending ? "جاري الحفظ..." : "إضافة الشركة"}
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setIsAdding(false)} 
+                    className="px-6 py-3.5 bg-gray-100 text-gray-500 rounded-2xl font-bold hover:bg-gray-200 transition-all active:scale-95"
+                  >
+                    إلغاء
+                  </button>
                 </div>
               </form>
             </motion.div>
@@ -68,27 +115,49 @@ export default function SubsidiaryList({ initialSubsidiaries }: { initialSubsidi
               className="bg-white p-6 rounded-3xl shadow-xl shadow-brand-navy/5 border border-gray-100 group relative overflow-hidden"
             >
               {editingId === subsidiary.id ? (
-                <form action={async (formData) => {
-                  startTransition(async () => {
-                    await updateSubsidiary(subsidiary.id, formData);
-                    setEditingId(null);
-                  });
-                }} className="space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400">اسم الشركة</label>
-                    <input name="name" defaultValue={subsidiary.name} required className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400">الوصف</label>
-                    <textarea name="description" defaultValue={subsidiary.description} className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none resize-none" rows={3}></textarea>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-gray-400">رابط الشعار (Logo URL)</label>
-                    <input name="logoUrl" defaultValue={subsidiary.logoUrl} placeholder="/images/logos/..." className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-red outline-none" />
-                  </div>
-                  <div className="flex gap-2 pt-2">
-                    <button type="submit" disabled={isPending} className="flex-1 bg-brand-navy text-white py-2 rounded-xl font-bold hover:bg-black transition disabled:opacity-50">حفظ التغييرات</button>
-                    <button type="button" onClick={() => setEditingId(null)} className="px-4 py-2 bg-gray-100 text-gray-500 rounded-xl hover:bg-gray-200 transition">إلغاء</button>
+                <form action={(fd) => handleAction(updateSubsidiary.bind(null, subsidiary.id), fd)} className="space-y-4">
+                  <div className="space-y-4 font-arabic">
+                    <div className="space-y-2">
+                      <label className="text-sm font-black text-brand-navy pr-1 block text-right">اسم الشركة</label>
+                      <input 
+                        name="name" 
+                        defaultValue={subsidiary.name} 
+                        required 
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-2xl focus:ring-4 focus:ring-brand-navy/5 focus:border-brand-navy outline-none text-brand-navy font-bold transition-all text-right" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-black text-brand-navy pr-1 block text-right">الوصف</label>
+                      <textarea 
+                        name="description" 
+                        defaultValue={subsidiary.description} 
+                        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-2xl focus:ring-4 focus:ring-brand-navy/5 focus:border-brand-navy outline-none resize-none text-gray-700 min-h-[100px] transition-all text-right" 
+                      />
+                    </div>
+                    
+                    <ImagePreview 
+                      initialUrl={subsidiary.logoUrl} 
+                      name="logo" 
+                      label="شعار الشركة (Logo)" 
+                      folder="subsidiaries/logos"
+                    />
+
+                    <div className="flex gap-3 pt-4">
+                      <button 
+                        type="submit" 
+                        disabled={isPending} 
+                        className="flex-1 bg-brand-navy text-white py-3.5 rounded-2xl font-black text-lg hover:bg-black hover:shadow-xl active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-brand-navy/10"
+                      >
+                        {isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => setEditingId(null)} 
+                        className="px-6 py-3.5 bg-gray-100 text-gray-500 rounded-2xl font-bold hover:bg-gray-200 transition-all active:scale-95"
+                      >
+                        إلغاء
+                      </button>
+                    </div>
                   </div>
                 </form>
               ) : (
@@ -113,7 +182,16 @@ export default function SubsidiaryList({ initialSubsidiaries }: { initialSubsidi
                         onClick={() => {
                             if(confirm('هل أنت متأكد من حذف هذه الشركة؟')) {
                                 startTransition(async () => {
-                                    await deleteSubsidiary(subsidiary.id);
+                                    try {
+                                        const result = await deleteSubsidiary(subsidiary.id);
+                                        if (result?.error) {
+                                            alert(result.error);
+                                        } else {
+                                            setSubsidiaries(prev => prev.filter(s => s.id !== subsidiary.id));
+                                        }
+                                    } catch (err) {
+                                        alert("حدث خطأ غير متوقع أثناء الحذف.");
+                                    }
                                 });
                             }
                         }}

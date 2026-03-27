@@ -14,6 +14,11 @@ export default function MessageManager({ initialMessages }: { initialMessages: a
   const [hasNew, setHasNew] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
 
+  // Sync state with props when server-side refresh happens
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
+
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch("/api/messages", { cache: "no-store" });

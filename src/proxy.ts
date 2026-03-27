@@ -2,7 +2,7 @@ import { auth } from "./auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export default auth((req: NextRequest & { auth: any }) => {
+export const proxy = auth((req: NextRequest & { auth: any }) => {
   const isLoggedin = !!req.auth;
   const { nextUrl } = req;
 
@@ -19,6 +19,8 @@ export default auth((req: NextRequest & { auth: any }) => {
 
   return NextResponse.next();
 });
+
+export default proxy;
 
 export const config = {
   matcher: ["/admin/dashboard/:path*", "/admin/login"],

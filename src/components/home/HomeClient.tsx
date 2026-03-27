@@ -88,7 +88,7 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
 
               <motion.div variants={fadeIn} className="grid grid-cols-3 gap-6 pt-10 border-t border-white/10 transform-gpu w-full">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-1">+25</div>
+                  <div className="text-3xl font-bold text-white mb-1">+38</div>
                   <div className="text-sm text-gray-400">عام من الخبرة</div>
                 </div>
                 <div className="text-center">

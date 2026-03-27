@@ -12,7 +12,9 @@ export const subsidiaries = pgTable("subsidiaries", {
   name: text("name").notNull(),
   description: text("description"),
   logoUrl: text("logo_url"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  logoKey: text("logo_key"), // R2 key
+  logoSource: text("logo_source").default("external"), // 'r2' or 'external'
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export const posts = pgTable("posts", {
@@ -27,22 +29,28 @@ export const projects = pgTable("projects", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull(),
   description: text("description"),
-  imageUrl: text("image_url"),
+  imageUrl: text("image_url").default("/images/project.png"),
+  imageKey: text("image_key"), // R2 key
+  imageSource: text("image_source").default("external"), // 'r2' or 'external'
   category: text("category"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export const products = pgTable("products", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull(),
   description: text("description"),
-  imageUrl: text("image_url"),
-  category: text("category"),
-  price: decimal("price", { precision: 10, scale: 2 }).default("0"),
-  stock: decimal("stock", { precision: 10, scale: 2 }).default("0"),
+  imageUrl: text("image_url").default("/images/product.png"),
+  imageKey: text("image_key"), // R2 key
+  imageSource: text("image_source").default("external"), // 'r2' or 'external'
+  category: text("category").notNull(),
+  price: text("price").notNull(),
+  stock: text("stock").default("0"),
   pdfUrl: text("pdf_url"),
-  subsidiaryId: uuid("subsidiary_id").references((): AnyPgColumn => subsidiaries.id, { onDelete: "set null" }), // Link to subsidiary
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  pdfKey: text("pdf_key"), // R2 key
+  pdfSource: text("pdf_source").default("external"), // 'r2' or 'external'
+  subsidiaryId: uuid("subsidiary_id").references(() => subsidiaries.id),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
 export const categories = pgTable("categories", {

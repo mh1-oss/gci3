@@ -16,7 +16,7 @@ type Product = {
   stock: string | null;
   pdfUrl?: string | null;
   subsidiaryId?: string | null;
-  createdAt?: Date;
+  createdAt?: Date | null;
 };
 
 type Category = { id: string; name: string };
