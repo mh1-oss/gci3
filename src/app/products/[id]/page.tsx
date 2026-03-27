@@ -5,6 +5,31 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Package, Tag, Layers, DownloadCloud } from "lucide-react";
 import PriceDisplay from "@/components/ui/PriceDisplay";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const productId = resolvedParams.id;
+  
+  const productData = await db.select().from(products).where(eq(products.id, productId)).limit(1);
+  const product = productData[0];
+
+  if (!product) {
+    return {
+      title: "المنتج غير موجود",
+    };
+  }
+
+  return {
+    title: product.title,
+    description: product.description?.slice(0, 160) || `تفاصيل ${product.title} من مجموعة الوليد للتجارة العامة.`,
+    openGraph: {
+      title: `${product.title} | مجموعة الوليد`,
+      description: product.description?.slice(0, 160) || `تفاصيل ${product.title} من مجموعة الوليد.`,
+      images: [product.imageUrl || "/images/product.png"],
+    },
+  };
+}
 
 export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;

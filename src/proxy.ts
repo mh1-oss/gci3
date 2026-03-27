@@ -1,24 +1,25 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { auth } from "./auth";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const isAdminDashboard = pathname.startsWith('/admin/dashboard');
-  const isAdminLogin = pathname === '/admin/login';
-  const isAdminRoot = pathname === '/admin';
-  const token = request.cookies.get('admin_token')?.value;
+export default auth((req: NextRequest & { auth: any }) => {
+  const isLoggedin = !!req.auth;
+  const { nextUrl } = req;
 
-  // Protect dashboard
-  if (isAdminDashboard && token !== 'authenticated') {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+  const isDashboardRoute = nextUrl.pathname.startsWith("/admin/dashboard");
+  const isLoginRoute = nextUrl.pathname === "/admin/login";
+
+  if (isDashboardRoute && !isLoggedin) {
+    return NextResponse.redirect(new URL("/admin/login", nextUrl));
   }
 
-  // Redirect to dashboard if already logged in and visiting login or root admin
-  if ((isAdminLogin || isAdminRoot) && token === 'authenticated') {
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+  if (isLoginRoute && isLoggedin) {
+    return NextResponse.redirect(new URL("/admin/dashboard", nextUrl));
   }
-}
+
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: ["/admin/dashboard/:path*", "/admin/login"],
 };

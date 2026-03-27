@@ -105,6 +105,15 @@ export const messages = pgTable("messages", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name"),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(), // Hashed
+  role: text("role").default("admin").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
 export const siteSettings = pgTable("site_settings", {
   id: text("id").primaryKey().default("main"),
   companyName: text("company_name").default("مجموعة الوليد للتجارة العامة (AGT)"),

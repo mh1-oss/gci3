@@ -21,8 +21,31 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "مجموعة الوليد للتجارة العامة | AGT Group",
-  description: "مجموعة الوليد للتجارة العامة (AGT) - الوكيل الحصري لأجود أنواع الأصباغ والمنتجات الإنشائية",
+  title: {
+    template: "%s | مجموعة الوليد للتجارة العامة",
+    default: "مجموعة الوليد للتجارة العامة | AGT Group",
+  },
+  description: "مجموعة الوليد للتجارة العامة (AGT) - الوكيل الحصري لأجود أنواع الأصباغ والمنتجات الإنشائية في العراق. جودة عالية وحلول مبتكرة.",
+  keywords: ["أصباغ", "دهانات", "ديكور", "مجموعة الوليد", "AGT Group", "العراق", "بغداد", "National Paints", "GCI Paints"],
+  authors: [{ name: "AGT Group" }],
+  metadataBase: new URL("https://agt-group.com"), // Update to real production URL when ready
+  openGraph: {
+    title: "مجموعة الوليد للتجارة العامة | AGT Group",
+    description: "الوكيل الحصري لأجود أنواع الأصباغ والمنتجات الإنشائية في العراق.",
+    url: "https://agt-group.com",
+    siteName: "مجموعة الوليد للتجارة العامة",
+    locale: "ar_IQ",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "مجموعة الوليد للتجارة العامة | AGT Group",
+    description: "الوكيل الحصري لأجود أنواع الأصباغ والمنتجات الإنشائية في العراق.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: "/logo.svg?v=1",
     apple: "/logo.svg?v=1",

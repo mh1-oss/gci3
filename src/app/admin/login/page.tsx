@@ -8,13 +8,22 @@ import { useSearchParams } from "next/navigation";
 
 function LoginForm() {
   const searchParams = useSearchParams();
-  const hasError = searchParams.get("error");
+  const errorCode = searchParams.get("error");
+  
+  const getErrorMessage = (code: string | null) => {
+    if (code === "1") return "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+    if (code === "2") return "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى";
+    if (code) return "حدث خطأ غير متوقع";
+    return null;
+  };
+
+  const errorMessage = getErrorMessage(errorCode);
 
   return (
     <>
-      {hasError && (
-        <div className="bg-red-50 text-brand-red p-3 rounded-xl text-center text-sm font-arabic font-bold">
-          البريد الإلكتروني أو كلمة المرور غير صحيحة
+      {errorMessage && (
+        <div className="bg-red-50 text-brand-red p-3 rounded-xl text-center text-sm font-arabic font-bold border border-red-100">
+          {errorMessage}
         </div>
       )}
       
@@ -28,7 +37,7 @@ function LoginForm() {
                 name="email"
                 required
                 className="appearance-none block w-full pl-4 pr-10 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-red focus:border-transparent transition-all sm:text-sm text-gray-900 placeholder:text-gray-400"
-                placeholder="admin@gcipaints.com"
+                placeholder="example@agt-group.com"
                 dir="ltr"
               />
               <Mail className="absolute right-3 top-3.5 h-5 w-5 text-gray-400" />

@@ -7,30 +7,31 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
+import { signIn, signOut } from "@/auth";
+import { AuthError } from "next-auth";
+
 export async function loginAdmin(formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
-  
-  if (email === "admin@gcipaints.com" && password === "123456") {
-    const cookieStore = await cookies();
-    cookieStore.set({
-      name: 'admin_token',
-      value: 'authenticated',
-      httpOnly: true,
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7 // 1 week
+  try {
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirectTo: "/admin/dashboard",
     });
-    redirect("/admin/dashboard");
-  } else {
-    // Basic redirect back to login, ignoring errors for now (could use actionState)
-    redirect("/admin/login?error=1");
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return redirect("/admin/login?error=1");
+        default:
+          return redirect("/admin/login?error=2");
+      }
+    }
+    throw error;
   }
 }
 
 export async function logoutAdmin() {
-  const cookieStore = await cookies();
-  cookieStore.delete('admin_token');
-  redirect("/admin/login");
+  await signOut({ redirectTo: "/admin/login" });
 }
 
 // Site Settings
