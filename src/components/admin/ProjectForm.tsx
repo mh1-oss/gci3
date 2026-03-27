@@ -1,11 +1,13 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { updateProject } from "@/app/admin/actions";
 import { Save } from "lucide-react";
 import ImagePreview from "./ImagePreview";
 
 export default function ProjectForm({ project }: { project: any }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,6 +18,10 @@ export default function ProjectForm({ project }: { project: any }) {
         const result = await updateProject(project.id, formData);
         if (result?.error) {
            alert(result.error);
+        } else {
+           // Redirect on success
+           router.push("/admin/dashboard/projects");
+           router.refresh();
         }
       } catch (err) {
         alert("فشل الحفظ. تأكد من إعدادات Cloudflare R2.");

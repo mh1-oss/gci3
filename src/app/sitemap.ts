@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allProducts = await db.select().from(products)
   const productRoutes = allProducts.map((p) => ({
     url: `${baseUrl}/products/${p.id}`,
-    lastModified: p.createdAt,
+    lastModified: p.createdAt || new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }))

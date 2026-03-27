@@ -3,15 +3,24 @@
 import { createProject } from "@/app/admin/actions";
 import { ArrowRight, Save, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 export default function NewProjectPage() {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    startTransition(() => createProject(formData));
+    startTransition(async () => {
+      const result = await createProject(formData);
+      if (result?.success) {
+        router.push("/admin/dashboard/projects");
+      } else if (result?.error) {
+        alert(result.error);
+      }
+    });
   };
 
   return (

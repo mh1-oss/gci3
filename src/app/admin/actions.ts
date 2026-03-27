@@ -349,98 +349,108 @@ export async function deleteProduct(id: string) {
 export async function createProduct(formData: FormData) {
   await requireAdmin();
   
-  const title = formData.get("title") as string;
-  const category = formData.get("category") as string;
-  const price = formData.get("price") as string;
-  const stock = formData.get("stock") as string || "0";
-  const description = formData.get("description") as string;
-  const imageUrl = formData.get("imageUrl") as string;
-  const imageFile = formData.get("imageFile") as File;
-  const pdfUrl = formData.get("pdfUrl") as string;
-  const pdfFile = formData.get("pdfFile") as File;
-  const subsidiaryId = formData.get("subsidiaryId") as string;
+  try {
+    const title = formData.get("title") as string;
+    const category = formData.get("category") as string;
+    const price = formData.get("price") as string;
+    const stock = formData.get("stock") as string || "0";
+    const description = formData.get("description") as string;
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageFile = formData.get("imageFile") as File;
+    const pdfUrl = formData.get("pdfUrl") as string;
+    const pdfFile = formData.get("pdfFile") as File;
+    const subsidiaryId = formData.get("subsidiaryId") as string;
 
-  const image = await handleMediaUpdate(imageUrl, imageFile, null, null, "products/images");
-  const pdf = await handleMediaUpdate(pdfUrl, pdfFile, null, null, "products/pdfs");
+    const image = await handleMediaUpdate(imageUrl, imageFile, null, null, "products/images");
+    const pdf = await handleMediaUpdate(pdfUrl, pdfFile, null, null, "products/pdfs");
 
-  await db.insert(products).values({
-    title,
-    category,
-    price,
-    stock,
-    description,
-    imageUrl: image.url || "/images/product.png",
-    imageKey: image.key,
-    imageSource: image.source,
-    pdfUrl: pdf.url,
-    pdfKey: pdf.key,
-    pdfSource: pdf.source,
-    subsidiaryId: subsidiaryId || null,
-  });
+    await db.insert(products).values({
+      title,
+      category,
+      price,
+      stock,
+      description,
+      imageUrl: image.url || "/images/product.png",
+      imageKey: image.key,
+      imageSource: image.source,
+      pdfUrl: pdf.url,
+      pdfKey: pdf.key,
+      pdfSource: pdf.source,
+      subsidiaryId: subsidiaryId || null,
+    });
 
-  revalidatePath("/admin/dashboard/products");
-  revalidatePath("/admin/dashboard/inventory");
-  revalidatePath("/products");
-  redirect("/admin/dashboard/products");
+    revalidatePath("/admin/dashboard/products");
+    revalidatePath("/admin/dashboard/inventory");
+    revalidatePath("/products");
+    return { success: true };
+  } catch (error) {
+    console.error("Create Product Error:", error);
+    return { error: "فشل إنشاء المنتج. يرجى التحقق من المدخلات." };
+  }
 }
 
 export async function updateProduct(id: string, formData: FormData) {
   await requireAdmin();
   
-  const [current] = await db.select().from(products).where(eq(products.id, id)).limit(1);
-  if (!current) throw new Error("Product not found");
+  try {
+    const [current] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+    if (!current) throw new Error("Product not found");
 
-  const title = formData.get("title") as string;
-  const category = formData.get("category") as string;
-  const price = formData.get("price") as string;
-  const stock = formData.get("stock") as string;
-  const description = formData.get("description") as string;
-  const imageUrl = formData.get("imageUrl") as string;
-  const imageFile = formData.get("imageFile") as File;
-  const pdfUrl = formData.get("pdfUrl") as string;
-  const pdfFile = formData.get("pdfFile") as File;
-  const subsidiaryId = formData.get("subsidiaryId") as string;
+    const title = formData.get("title") as string;
+    const category = formData.get("category") as string;
+    const price = formData.get("price") as string;
+    const stock = formData.get("stock") as string;
+    const description = formData.get("description") as string;
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageFile = formData.get("imageFile") as File;
+    const pdfUrl = formData.get("pdfUrl") as string;
+    const pdfFile = formData.get("pdfFile") as File;
+    const subsidiaryId = formData.get("subsidiaryId") as string;
 
-  const image = await handleMediaUpdate(
-    imageUrl, 
-    imageFile, 
-    current.imageUrl, 
-    current.imageKey, 
-    "products/images"
-  );
-  
-  const pdf = await handleMediaUpdate(
-    pdfUrl, 
-    pdfFile, 
-    current.pdfUrl, 
-    current.pdfKey, 
-    "products/pdfs"
-  );
+    const image = await handleMediaUpdate(
+      imageUrl, 
+      imageFile, 
+      current.imageUrl, 
+      current.imageKey, 
+      "products/images"
+    );
+    
+    const pdf = await handleMediaUpdate(
+      pdfUrl, 
+      pdfFile, 
+      current.pdfUrl, 
+      current.pdfKey, 
+      "products/pdfs"
+    );
 
-  const updateData: any = {
-    title,
-    category,
-    price,
-    description,
-    imageUrl: image.url || "/images/product.png",
-    imageKey: image.key,
-    imageSource: image.source,
-    pdfUrl: pdf.url,
-    pdfKey: pdf.key,
-    pdfSource: pdf.source,
-    subsidiaryId: subsidiaryId || null,
-  };
+    const updateData: any = {
+      title,
+      category,
+      price,
+      description,
+      imageUrl: image.url || "/images/product.png",
+      imageKey: image.key,
+      imageSource: image.source,
+      pdfUrl: pdf.url,
+      pdfKey: pdf.key,
+      pdfSource: pdf.source,
+      subsidiaryId: subsidiaryId || null,
+    };
 
-  if (stock !== null) {
-    updateData.stock = stock;
+    if (stock !== null) {
+      updateData.stock = stock;
+    }
+
+    await db.update(products).set(updateData).where(eq(products.id, id));
+
+    revalidatePath("/admin/dashboard/products");
+    revalidatePath("/admin/dashboard/inventory");
+    revalidatePath("/products");
+    return { success: true };
+  } catch (error) {
+    console.error("Update Product Error:", error);
+    return { error: "فشل تحديث المنتج. تأكد من إعدادات التخزين." };
   }
-
-  await db.update(products).set(updateData).where(eq(products.id, id));
-
-  revalidatePath("/admin/dashboard/products");
-  revalidatePath("/admin/dashboard/inventory");
-  revalidatePath("/products");
-  redirect("/admin/dashboard/products");
 }
 
 export async function updateStock(productId: string, quantity: string) {
@@ -490,60 +500,70 @@ export async function deleteRepliedMessages() {
 export async function createProject(formData: FormData) {
   await requireAdmin();
   
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
-  const category = formData.get("category") as string;
-  const imageUrl = formData.get("imageUrl") as string;
-  const imageFile = formData.get("imageFile") as File;
+  try {
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const category = formData.get("category") as string;
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageFile = formData.get("imageFile") as File;
 
-  const image = await handleMediaUpdate(imageUrl, imageFile, null, null, "projects");
+    const image = await handleMediaUpdate(imageUrl, imageFile, null, null, "projects");
 
-  await db.insert(projects).values({
-    title,
-    description,
-    category,
-    imageUrl: image.url || "/images/project.png",
-    imageKey: image.key,
-    imageSource: image.source,
-  });
+    await db.insert(projects).values({
+      title,
+      description,
+      category,
+      imageUrl: image.url || "/images/project.png",
+      imageKey: image.key,
+      imageSource: image.source,
+    });
 
-  revalidatePath("/admin/dashboard/projects");
-  revalidatePath("/projects");
-  redirect("/admin/dashboard/projects");
+    revalidatePath("/admin/dashboard/projects");
+    revalidatePath("/projects");
+    return { success: true };
+  } catch (error) {
+    console.error("Create Project Error:", error);
+    return { error: "فشل إنشاء المشروع." };
+  }
 }
 
 export async function updateProject(id: string, formData: FormData) {
   await requireAdmin();
   
-  const [current] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
-  if (!current) throw new Error("Project not found");
+  try {
+    const [current] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
+    if (!current) throw new Error("Project not found");
 
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
-  const category = formData.get("category") as string;
-  const imageUrl = formData.get("imageUrl") as string;
-  const imageFile = formData.get("imageFile") as File;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const category = formData.get("category") as string;
+    const imageUrl = formData.get("imageUrl") as string;
+    const imageFile = formData.get("imageFile") as File;
 
-  const image = await handleMediaUpdate(
-    imageUrl, 
-    imageFile, 
-    current.imageUrl, 
-    current.imageKey, 
-    "projects"
-  );
+    const image = await handleMediaUpdate(
+      imageUrl, 
+      imageFile, 
+      current.imageUrl, 
+      current.imageKey, 
+      "projects"
+    );
 
-  await db.update(projects).set({
-    title,
-    description,
-    category,
-    imageUrl: image.url || "/images/project.png",
-    imageKey: image.key,
-    imageSource: image.source,
-  }).where(eq(projects.id, id));
+    await db.update(projects).set({
+      title,
+      description,
+      category,
+      imageUrl: image.url || "/images/project.png",
+      imageKey: image.key,
+      imageSource: image.source,
+    }).where(eq(projects.id, id));
 
-  revalidatePath("/admin/dashboard/projects");
-  revalidatePath("/projects");
-  redirect("/admin/dashboard/projects");
+    revalidatePath("/admin/dashboard/projects");
+    revalidatePath("/projects");
+    return { success: true };
+  } catch (error) {
+    console.error("Update Project Error:", error);
+    return { error: "فشل تحديث المشروع." };
+  }
 }
 
 export async function deleteProject(id: string) {

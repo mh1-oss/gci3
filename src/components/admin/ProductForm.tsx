@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { updateProduct } from "@/app/admin/actions";
 import { Save, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +12,7 @@ export default function ProductForm({ product, categories, subsidiaries }: {
   categories: any[], 
   subsidiaries: any[] 
 }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -18,7 +20,14 @@ export default function ProductForm({ product, categories, subsidiaries }: {
     const formData = new FormData(e.currentTarget);
     startTransition(async () => {
       try {
-        await updateProduct(product.id, formData);
+        const result = await updateProduct(product.id, formData);
+        if (result?.error) {
+          alert(result.error);
+        } else {
+          // Redirect on success
+          router.push("/admin/dashboard/products");
+          router.refresh();
+        }
       } catch (err) {
         alert("فشل الحفظ. تأكد من إعدادات Cloudflare R2.");
       }
