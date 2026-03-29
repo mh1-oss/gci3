@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { products, categories, siteSettings, messages, quotes, quoteItems, projects, subsidiaries, users } from "@/db/schema";
+import { products, categories, siteSettings, messages, quotes, quoteItems, projects, subsidiaries, users, loginAttempts } from "@/db/schema";
+import { headers } from "next/headers";
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -14,14 +15,53 @@ import { uploadToR2, deleteFromR2 } from "@/lib/s3";
 import { settingsSchema, subsidiarySchema, productSchema } from "@/lib/validations";
 
 export async function loginAdmin(formData: FormData) {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(',')[0] || "unknown";
+  
+  // 1. Check Rate Limit
+  const [attempt] = await db.select().from(loginAttempts).where(eq(loginAttempts.ip, ip)).limit(1);
+  
+  if (attempt && Number(attempt.count) >= 5) {
+    const lastTime = new Date(attempt.lastAttempt!).getTime();
+    const now = new Date().getTime();
+    const diff = (now - lastTime) / (1000 * 60); // minutes
+    
+    if (diff < 1) {
+      return redirect("/admin/login?error=blocked");
+    } else {
+      // Reset after 1 minute
+      await db.update(loginAttempts).set({ count: "0", lastAttempt: new Date() }).where(eq(loginAttempts.ip, ip));
+    }
+  }
+
   try {
     await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
       redirectTo: "/admin/dashboard",
     });
+
+    // 2. Clear attempts on success
+    await db.delete(loginAttempts).where(eq(loginAttempts.ip, ip));
   } catch (error) {
     if (error instanceof AuthError) {
+      // 3. Increment attempts on failure
+      const [currAttempt] = await db.select().from(loginAttempts).where(eq(loginAttempts.ip, ip)).limit(1);
+      if (currAttempt) {
+        await db.update(loginAttempts)
+          .set({ 
+            count: (Number(currAttempt.count) + 1).toString(), 
+            lastAttempt: new Date() 
+          })
+          .where(eq(loginAttempts.ip, ip));
+      } else {
+        await db.insert(loginAttempts).values({
+          ip,
+          count: "1",
+          lastAttempt: new Date()
+        });
+      }
+
       switch (error.type) {
         case "CredentialsSignin":
           return redirect("/admin/login?error=1");
@@ -526,6 +566,7 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function updateStock(productId: string, quantity: string) {
+  await requireAdmin();
   const cleanQuantity = Math.floor(Number(quantity) || 0).toString();
   await db.update(products).set({ stock: cleanQuantity }).where(eq(products.id, productId));
   revalidatePath("/admin/dashboard/inventory");

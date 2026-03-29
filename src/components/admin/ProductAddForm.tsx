@@ -57,11 +57,16 @@ export default function ProductAddForm({ categories, subsidiaries }: {
     updateVariantMatrix(newSizes, colors);
   };
   const updateSize = (index: number, field: "name" | "price" | "stock", value: string) => {
+    const oldName = sizes[index].name;
     const newSizes = [...sizes];
     newSizes[index][field] = value;
     setSizes(newSizes);
     
-    if (unifyPrice && hasColors) {
+    if (field === "name") {
+      setVariantInventory(prev => prev.map(v => 
+        v.size === oldName ? { ...v, size: value } : v
+      ));
+    } else if (unifyPrice && hasColors) {
       const sizeName = newSizes[index].name;
       setVariantInventory(prev => prev.map(v => 
         v.size === sizeName ? { ...v, price: field === "price" ? value : v.price } : v
@@ -82,10 +87,25 @@ export default function ProductAddForm({ categories, subsidiaries }: {
     updateVariantMatrix(sizes, newColors);
   };
   const updateColor = (index: number, field: "name" | "hex", value: string) => {
+    const oldName = colors[index].name;
+    let newValue = value;
+    
+    // Auto-prefix hex with #
+    if (field === "hex" && value && !value.startsWith("#") && /^[0-9A-Fa-f]{3,6}$/.test(value)) {
+      newValue = "#" + value;
+    }
+
     const newColors = [...colors];
-    newColors[index][field] = value;
+    newColors[index][field] = newValue;
     setColors(newColors);
-    updateVariantMatrix(sizes, newColors);
+
+    if (field === "name" && oldName) {
+      setVariantInventory(prev => prev.map(v => 
+        v.color === oldName ? { ...v, color: value } : v
+      ));
+    } else {
+      updateVariantMatrix(sizes, newColors);
+    }
   };
 
   const updateVariant = (index: number, field: "stock" | "price", value: string) => {
@@ -140,12 +160,12 @@ export default function ProductAddForm({ categories, subsidiaries }: {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label htmlFor="title" className="block text-sm font-bold text-gray-700">اسم المنتج</label>
-          <input type="text" id="title" name="title" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900" placeholder="مثال: أكريليك مطفي" />
+          <input type="text" id="title" name="title" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold" placeholder="مثال: أكريليك مطفي" />
         </div>
 
         <div className="space-y-2">
           <label htmlFor="category" className="block text-sm font-bold text-gray-700">القسم</label>
-          <select id="category" name="category" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900">
+          <select id="category" name="category" required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold">
             {categories.map((cat) => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
@@ -158,7 +178,7 @@ export default function ProductAddForm({ categories, subsidiaries }: {
         <div className="space-y-2">
           <label htmlFor="subsidiaryId" className="block text-sm font-bold text-gray-700">الشركة المصنعة</label>
           <div className="relative">
-            <select id="subsidiaryId" name="subsidiaryId" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 bg-white">
+            <select id="subsidiaryId" name="subsidiaryId" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold bg-white">
               <option value="">لا يوجد (منتج عام للمجموعة)</option>
               {subsidiaries.map((sub) => (
                 <option key={sub.id} value={sub.id}>{sub.name}</option>
@@ -169,7 +189,7 @@ export default function ProductAddForm({ categories, subsidiaries }: {
 
         <div className="space-y-2">
           <label htmlFor="price" className="block text-sm font-bold text-gray-700">السعر (بالدولار)</label>
-          <input type="number" step="0.01" min="0" id="price" name="price" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 text-left" dir="ltr" placeholder="25.00" disabled={hasSizes} title={hasSizes ? "يتم اعتماد سعر الحجم الأول تلقائياً عند تفعيل خيار الأحجام" : ""} />
+          <input type="number" step="0.01" min="0" id="price" name="price" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold text-left" dir="ltr" placeholder="25.00" disabled={hasSizes} title={hasSizes ? "يتم اعتماد سعر الحجم الأول تلقائياً عند تفعيل خيار الأحجام" : ""} />
           {hasSizes && <p className="text-[10px] text-brand-red mt-1">سيتم استخدام سعر أصغر حجم تلقائياً كسعر رئيسي</p>}
         </div>
 
@@ -180,12 +200,12 @@ export default function ProductAddForm({ categories, subsidiaries }: {
               {hasColors 
                 ? variantInventory.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0) 
                 : sizes.reduce((acc, s) => acc + (parseInt(s.stock) || 0), 0)}
-              <input type="hidden" name="stock" value={hasColors 
+              <input id="stock" type="hidden" name="stock" value={hasColors 
                 ? variantInventory.reduce((acc, v) => acc + (parseInt(v.stock) || 0), 0) 
                 : sizes.reduce((acc, s) => acc + (parseInt(s.stock) || 0), 0)} />
             </div>
           ) : (
-             <input type="number" step="1" min="0" id="stock" name="stock" defaultValue="0" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900" />
+             <input type="number" step="1" min="0" id="stock" name="stock" defaultValue="0" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold" />
           )}
           {hasSizes && <p className="text-[10px] text-brand-red mt-1">يتم حساب الكمية الكلية تلقائياً من مصفوفة الخيارات.</p>}
         </div>
@@ -193,59 +213,75 @@ export default function ProductAddForm({ categories, subsidiaries }: {
         
 
 
-      {/* ميزة الأحجام */}
       <div className="space-y-4 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-brand-navy font-bold">
-            <Ruler className="w-5 h-5 text-brand-red" />
-            <span>تفعيل الأحجام المتعددة</span>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" checked={hasSizes} onChange={(e) => setHasSizes(e.target.checked)} className="sr-only peer" />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[-20px] after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-red"></div>
+        <div className="flex items-center justify-between gap-4 border-r-4 border-brand-red pr-3">
+          <label htmlFor="hasSizes" className="text-lg font-bold text-brand-navy border-r-4 border-brand-red pr-3 cursor-pointer">إعدادات الأحجام</label>
+          <label className="relative inline-flex items-center cursor-pointer gap-3">
+            <span className="text-sm font-bold text-gray-700">تفعيل الأحجام المتعددة</span>
+            <div className="relative">
+              <input id="hasSizes" type="checkbox" checked={hasSizes} onChange={(e) => setHasSizes(e.target.checked)} className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[-20px] after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-red"></div>
+            </div>
           </label>
         </div>
 
         {hasSizes && (
-          <div className="space-y-3 mt-4 animate-in fade-in slide-in-from-top-2">
+          <div className="space-y-4 mt-4 animate-in fade-in slide-in-from-top-2">
             {sizes.map((size, index) => (
-              <div key={index} className="flex gap-3 items-center">
-                <input 
-                  type="text" 
-                  value={size.name} 
-                  onChange={(e) => updateSize(index, "name", e.target.value)} 
-                  placeholder="الحجم (مثلاً: 18 لتر)" 
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red" 
-                />
+              <div key={index} className="flex flex-col md:flex-row gap-3 items-start md:items-center bg-white md:bg-transparent p-4 md:p-0 rounded-xl border border-gray-100 md:border-0 shadow-sm md:shadow-none">
+                <div className="flex-1 w-full space-y-1">
+                  <label htmlFor={`size-name-${index}`} className="md:hidden text-[10px] font-bold text-gray-400 uppercase">اسم الحجم</label>
+                  <input 
+                    type="text" 
+                    id={`size-name-${index}`}
+                    value={size.name} 
+                    onChange={(e) => updateSize(index, "name", e.target.value)} 
+                    placeholder="الحجم (مثلاً: 18 لتر)" 
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold transition-all" 
+                    aria-label={`اسم الحجم رقم ${index + 1}`}
+                  />
+                </div>
                 {!hasColors && (
-                  <>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      min="0"
-                      value={size.price} 
-                      onChange={(e) => updateSize(index, "price", e.target.value)} 
-                      placeholder="السعر $" 
-                      className="w-24 px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red text-left" 
-                      dir="ltr" 
-                    />
-                    <input 
-                      type="number" 
-                      step="1"
-                      min="0"
-                      value={size.stock} 
-                      onChange={(e) => updateSize(index, "stock", e.target.value)} 
-                      placeholder="الكمية" 
-                      className="w-20 px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red" 
-                    />
-                  </>
+                  <div className="flex gap-3 w-full md:w-auto">
+                    <div className="flex-1 md:w-28 space-y-1">
+                      <label htmlFor={`size-price-${index}`} className="md:hidden text-[10px] font-bold text-gray-400 uppercase">السعر ($)</label>
+                      <input 
+                        type="number" 
+                        id={`size-price-${index}`}
+                        step="0.01"
+                        min="0"
+                        value={size.price} 
+                        onChange={(e) => updateSize(index, "price", e.target.value)} 
+                        placeholder="السعر $" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold text-left transition-all" 
+                        dir="ltr" 
+                        aria-label={`سعر الحجم ${size.name || index + 1}`}
+                      />
+                    </div>
+                    <div className="flex-1 md:w-24 space-y-1">
+                      <label htmlFor={`size-stock-${index}`} className="md:hidden text-[10px] font-bold text-gray-400 uppercase">الكمية</label>
+                      <input 
+                        type="number" 
+                        id={`size-stock-${index}`}
+                        step="1"
+                        min="0"
+                        value={size.stock} 
+                        onChange={(e) => updateSize(index, "stock", e.target.value)} 
+                        placeholder="الكمية" 
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold transition-all" 
+                        aria-label={`كمية الحجم ${size.name || index + 1}`}
+                      />
+                    </div>
+                  </div>
                 )}
-                <button type="button" onClick={() => removeSize(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="w-full md:w-auto flex justify-end pt-1 md:pt-0">
+                  <button type="button" onClick={() => removeSize(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
-            <button type="button" onClick={addSize} className="flex items-center gap-2 text-sm text-brand-navy hover:text-brand-red font-bold transition-colors">
+            <button type="button" onClick={addSize} className="flex items-center gap-2 text-sm text-brand-navy hover:text-brand-red font-bold transition-colors bg-white px-4 py-2 rounded-lg border border-dashed border-gray-200 hover:border-brand-red mt-2">
               <Plus className="w-4 h-4" />
               <span>إضافة حجم جديد</span>
             </button>
@@ -253,34 +289,64 @@ export default function ProductAddForm({ categories, subsidiaries }: {
         )}
       </div>
 
-      {/* ميزة الألوان */}
       <div className="space-y-4 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-brand-navy font-bold">
-            <Palette className="w-5 h-5 text-brand-red" />
-            <span>تفعيل الألوان المتاحة</span>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" checked={hasColors} onChange={(e) => setHasColors(e.target.checked)} className="sr-only peer" />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[-20px] after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-red"></div>
+        <div className="flex items-center justify-between gap-4 border-r-4 border-brand-red pr-3">
+          <label htmlFor="hasColors" className="text-lg font-bold text-brand-navy border-r-4 border-brand-red pr-3 cursor-pointer">إعدادات الألوان</label>
+          <label className="relative inline-flex items-center cursor-pointer gap-3">
+            <span className="text-sm font-bold text-gray-700">تفعيل الألوان المتاحة</span>
+            <div className="relative">
+              <input id="hasColors" type="checkbox" checked={hasColors} onChange={(e) => setHasColors(e.target.checked)} className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[-20px] after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-red"></div>
+            </div>
           </label>
         </div>
 
         {hasColors && (
-          <div className="space-y-3 mt-4 animate-in fade-in slide-in-from-top-2">
+          <div className="space-y-4 mt-4 animate-in fade-in slide-in-from-top-2">
             {colors.map((color, index) => (
-              <div key={index} className="flex gap-3 items-center">
-                <input type="text" value={color.name} onChange={(e) => updateColor(index, "name", e.target.value)} placeholder="اسم اللون (مثلاً: أبيض ملكي)" className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red" />
-                <div className="flex items-center gap-2 bg-white px-2 py-1 border border-gray-300 rounded-lg">
-                  <input type="color" value={color.hex} onChange={(e) => updateColor(index, "hex", e.target.value)} className="w-8 h-8 rounded cursor-pointer border-none bg-transparent" />
-                  <input type="text" value={color.hex} onChange={(e) => updateColor(index, "hex", e.target.value)} className="w-20 text-xs font-mono outline-none border-none" />
+              <div key={index} className="flex flex-col md:flex-row gap-3 items-start md:items-center bg-white md:bg-transparent p-4 md:p-0 rounded-xl border border-gray-100 md:border-0 shadow-sm md:shadow-none w-full">
+                <div className="flex-1 w-full space-y-1">
+                  <label htmlFor={`color-name-${index}`} className="md:hidden text-[10px] font-bold text-gray-400 uppercase">اسم اللون</label>
+                  <input 
+                    type="text" 
+                    id={`color-name-${index}`}
+                    value={color.name} 
+                    onChange={(e) => updateColor(index, "name", e.target.value)} 
+                    placeholder="اسم اللون (مثلاً: أبيض ملكي)" 
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold transition-all" 
+                    aria-label={`اسم اللون رقم ${index + 1}`}
+                  />
                 </div>
-                <button type="button" onClick={() => removeColor(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="w-full md:w-auto space-y-1">
+                  <label htmlFor={`color-picker-${index}`} className="md:hidden text-[10px] font-bold text-gray-400 uppercase">اللون والـ Hex code</label>
+                  <div className="flex items-center gap-2 bg-white px-2 py-1 border border-gray-300 rounded-lg h-11">
+                    <input 
+                      type="color" 
+                      id={`color-picker-${index}`}
+                      value={color.hex.startsWith("#") ? color.hex : "#000000"} 
+                      onChange={(e) => updateColor(index, "hex", e.target.value)} 
+                      className="w-12 h-8 rounded-md cursor-pointer border border-gray-100 bg-transparent p-0" 
+                      aria-label={`اختيار اللون رقم ${index + 1}`}
+                    />
+                    <input 
+                      type="text" 
+                      id={`color-hex-${index}`}
+                      value={color.hex} 
+                      onChange={(e) => updateColor(index, "hex", e.target.value)} 
+                      className="w-24 h-8 text-sm font-mono outline-none border border-gray-100 rounded-md text-gray-900 font-bold text-center px-1" 
+                      placeholder="#000000" 
+                      aria-label={`كود الـ Hex للون رقم ${index + 1}`}
+                    />
+                  </div>
+                </div>
+                <div className="w-full md:w-auto flex justify-end pt-1 md:pt-0">
+                  <button type="button" onClick={() => removeColor(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
-            <button type="button" onClick={addColor} className="flex items-center gap-2 text-sm text-brand-navy hover:text-brand-red font-bold transition-colors">
+            <button type="button" onClick={addColor} className="flex items-center gap-2 text-sm text-brand-navy hover:text-brand-red font-bold transition-colors bg-white px-4 py-2 rounded-lg border border-dashed border-gray-200 hover:border-brand-red mt-2">
               <Plus className="w-4 h-4" />
               <span>إضافة لون جديد</span>
             </button>
@@ -296,78 +362,140 @@ export default function ProductAddForm({ categories, subsidiaries }: {
             <p className="text-sm text-gray-500">أدخل الكمية والسعر لكل خيار. سيتم تحديث السعر الافتراضي للمنتج بناءً على خياراتك.</p>
           </div>
 
-          <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100">
+          <label htmlFor="unifyPrice" className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 cursor-pointer">
             <div className="flex items-center gap-2">
               <span className="font-bold text-sm text-gray-800">توحيد السعر لكل الألوان في نفس الحجم</span>
               <span className="text-xs text-brand-red bg-brand-red/10 px-2 py-0.5 rounded-full">موصى به</span>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" checked={unifyPrice} onChange={(e) => setUnifyPrice(e.target.checked)} className="sr-only peer" />
+            <div className="relative inline-flex items-center">
+              <input id="unifyPrice" type="checkbox" checked={unifyPrice} onChange={(e) => setUnifyPrice(e.target.checked)} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[-20px] after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-navy"></div>
-            </label>
-          </div>
+            </div>
+          </label>
 
-          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-            <table className="w-full text-right text-sm">
-              <thead className="bg-gray-50 text-gray-700">
-                <tr>
-                  <th className="px-4 py-3 font-bold border-b border-gray-200">الحجم</th>
-                  <th className="px-4 py-3 font-bold border-b border-gray-200">اللون</th>
-                  <th className="px-4 py-3 font-bold border-b border-gray-200">السعر ($)</th>
-                  <th className="px-4 py-3 font-bold border-b border-gray-200">الكمية</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {variantInventory.length > 0 ? (
-                  variantInventory.map((variant, index) => {
-                    const colorObj = colors.find(c => c.name === variant.color);
-                    return (
-                      <tr key={index} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-4 py-3 font-bold text-brand-navy">{variant.size || "بدون اسم"}</td>
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            {colorObj && (
-                              <span className="w-4 h-4 rounded-full border border-gray-200 shadow-sm" style={{ backgroundColor: colorObj.hex }}></span>
-                            )}
-                            <span className="font-medium">{variant.color || "بدون اسم"}</span>
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-right text-sm">
+                <thead className="bg-gray-50 text-gray-700">
+                  <tr>
+                    <th className="px-4 py-3 font-bold border-b border-gray-200">الحجم</th>
+                    <th className="px-4 py-3 font-bold border-b border-gray-200">اللون</th>
+                    <th className="px-4 py-3 font-bold border-b border-gray-200">السعر ($)</th>
+                    <th className="px-4 py-3 font-bold border-b border-gray-200">الكمية</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {variantInventory.length > 0 ? (
+                    variantInventory.map((variant, index) => {
+                      const colorObj = colors.find(c => c.name === variant.color);
+                      return (
+                        <tr key={index} className="hover:bg-gray-50/50 text-gray-900 font-bold placeholder:text-gray-700/80 transition-colors">
+                          <td className="px-4 py-3 font-bold text-brand-navy">{variant.size || "بدون اسم"}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              {colorObj && (
+                                <span className="w-4 h-4 rounded-full border border-gray-200 shadow-sm" style={{ backgroundColor: colorObj.hex.startsWith("#") ? colorObj.hex : `#${colorObj.hex}` }}></span>
+                              )}
+                              <span className="font-medium text-gray-700">{variant.color || "بدون اسم"}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <input 
+                              type="number" 
+                              id={`v-price-${index}`}
+                              step="0.01"
+                              min="0"
+                              value={variant.price} 
+                              onChange={(e) => updateVariant(index, "price", e.target.value)} 
+                              className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold text-left" 
+                              dir="ltr" 
+                              placeholder="0.00"
+                              aria-label={`سعر ${variant.size} ${variant.color}`}
+                              disabled={unifyPrice && index > 0 && variantInventory[index - 1].size === variant.size}
+                              title={unifyPrice && index > 0 && variantInventory[index - 1].size === variant.size ? "السعر موحد لهذا الحجم. قم بتغيير الخيار الأول للحجم." : ""}
+                            />
+                          </td>
+                          <td className="px-4 py-3">
+                            <input 
+                              type="number" 
+                              id={`v-stock-${index}`}
+                              step="1"
+                              min="0"
+                              value={variant.stock} 
+                              onChange={(e) => updateVariant(index, "stock", e.target.value)} 
+                              className="w-20 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red placeholder:text-gray-700/80 placeholder:font-medium text-gray-900 font-bold" 
+                              aria-label={`كمية ${variant.size} ${variant.color}`}
+                            />
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : null}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {variantInventory.length > 0 ? (
+                variantInventory.map((variant, index) => {
+                  const colorObj = colors.find(c => c.name === variant.color);
+                  return (
+                    <div key={index} className="p-4 space-y-4 hover:bg-gray-50/50 transition-colors">
+                      <div className="flex justify-between items-center">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-gray-400 font-bold uppercase">الخيار</span>
+                          <span className="text-sm font-black text-brand-navy">{variant.size || "بدون حجم"} - {variant.color || "بدون لون"}</span>
+                        </div>
+                        {colorObj && (
+                          <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
+                             <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: colorObj.hex.startsWith("#") ? colorObj.hex : `#${colorObj.hex}` }}></span>
+                             <span className="text-[10px] font-bold text-gray-600">{variant.color}</span>
                           </div>
-                        </td>
-                        <td className="px-4 py-3">
+                        )}
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label htmlFor={`v-price-mob-${index}`} className="text-[10px] text-gray-400 font-bold uppercase block pr-1">السعر ($)</label>
                           <input 
                             type="number" 
+                            id={`v-price-mob-${index}`}
                             step="0.01"
                             min="0"
                             value={variant.price} 
                             onChange={(e) => updateVariant(index, "price", e.target.value)} 
-                            className="w-24 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red text-left" 
-                            dir="ltr" 
-                            placeholder="0.00"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-red bg-white font-bold text-left" 
+                            dir="ltr"
                             disabled={unifyPrice && index > 0 && variantInventory[index - 1].size === variant.size}
-                            title={unifyPrice && index > 0 && variantInventory[index - 1].size === variant.size ? "السعر موحد لهذا الحجم. قم بتغيير الخيار الأول للحجم." : ""}
                           />
-                        </td>
-                        <td className="px-4 py-3">
+                        </div>
+                        <div className="space-y-1">
+                          <label htmlFor={`v-stock-mob-${index}`} className="text-[10px] text-gray-400 font-bold uppercase block pr-1">الكمية</label>
                           <input 
                             type="number" 
+                            id={`v-stock-mob-${index}`}
                             step="1"
                             min="0"
                             value={variant.stock} 
                             onChange={(e) => updateVariant(index, "stock", e.target.value)} 
-                            className="w-20 px-3 py-1.5 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:ring-2 focus:ring-brand-red" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-red bg-white font-bold" 
                           />
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                      يرجى إضافة حجم ولون واحد على الأقل لتهيئة مصفوفة الخيارات.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                        </div>
+                      </div>
+                      {unifyPrice && index > 0 && variantInventory[index - 1].size === variant.size && (
+                         <p className="text-[9px] text-brand-red font-medium">تم توحيد السعر حسب الحجم.</p>
+                      )}
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="px-4 py-8 text-center text-gray-500 text-sm">
+                  يرجى إضافة حجم ولون واحد على الأقل لتهيئة مصفوفة الخيارات.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -385,23 +513,25 @@ export default function ProductAddForm({ categories, subsidiaries }: {
           />
 
           <div className="space-y-4">
-            <label className="block text-sm font-bold text-gray-700 text-right">ملف الكتالوج (PDF)</label>
+            <label htmlFor="pdfUrl" className="block text-sm font-bold text-gray-700 text-right cursor-pointer">ملف الكتالوج (PDF)</label>
             <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100 space-y-4">
               <div className="space-y-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase block text-right">رابط يدوي</span>
+                <label htmlFor="pdfUrl" className="text-[10px] font-black text-gray-600 uppercase transition-colors pr-1 block text-right cursor-pointer">رابط يدوي</label>
                 <input 
                   type="text" 
+                  id="pdfUrl"
                   name="pdfUrl" 
                   placeholder="https://..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 text-sm" 
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold text-sm" 
                   dir="ltr"
                 />
               </div>
               <div className="relative pt-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase block mb-2 text-right">رفع ملف جديد</span>
+                <label htmlFor="pdfFile" className="text-[11px] font-black text-gray-600 uppercase transition-colors pr-1 block mb-2 text-right cursor-pointer">رفع ملف جديد</label>
                 <div className="flex items-center gap-2">
                   <input 
                     type="file" 
+                    id="pdfFile"
                     name="pdfFile" 
                     ref={pdfInputRef}
                     accept=".pdf" 
@@ -430,11 +560,11 @@ export default function ProductAddForm({ categories, subsidiaries }: {
         <textarea id="description" name="description" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none resize-y text-gray-900" placeholder="وصف تفصيلي للمنتج..." />
       </div>
 
-      <div className="flex justify-end gap-4 pt-6 border-t border-gray-100">
-        <Link href="/admin/dashboard/products" className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-bold">
+      <div className="flex justify-end gap-3 md:gap-4 pt-6 border-t border-gray-100 mt-10">
+        <Link href="/admin/dashboard/products" className="px-6 md:px-8 py-2 md:py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-bold text-sm md:text-base">
           إلغاء
         </Link>
-        <button type="submit" disabled={isPending} className="px-10 py-2 bg-brand-navy text-white rounded-lg hover:bg-blue-900 transition-colors font-bold shadow-md disabled:opacity-50 flex items-center gap-2">
+        <button type="submit" disabled={isPending} className="px-10 md:px-12 py-2 md:py-3 bg-brand-navy text-white rounded-xl hover:bg-blue-900 transition-all font-black shadow-lg shadow-brand-navy/10 disabled:opacity-50 flex items-center gap-2 text-sm md:text-base">
           {isPending ? "جاري الحفظ..." : "حفظ المنتج"}
         </button>
       </div>

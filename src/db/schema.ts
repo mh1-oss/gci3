@@ -147,3 +147,9 @@ export const siteSettings = pgTable("site_settings", {
   showStock: text("show_stock").default("true"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
+
+export const loginAttempts = pgTable("login_attempts", {
+  ip: text("ip").primaryKey(),
+  count: decimal("count", { precision: 10, scale: 0 }).default("0"),
+  lastAttempt: timestamp("last_attempt", { withTimezone: true }).defaultNow(),
+});

@@ -13,6 +13,7 @@ function LoginForm() {
   const getErrorMessage = (code: string | null) => {
     if (code === "1") return "البريد الإلكتروني أو كلمة المرور غير صحيحة";
     if (code === "2") return "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى";
+    if (code === "blocked") return "تم حظر محاولات الدخول مؤقتاً بكثرة المحاولات الخاطئة. يرجى المحاولة بعد 15 دقيقة";
     if (code) return "حدث خطأ غير متوقع";
     return null;
   };

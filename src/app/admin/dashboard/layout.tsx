@@ -87,7 +87,7 @@ export default function DashboardLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-gray-50 lg:mr-64 transition-all duration-300">
-        <header className="h-16 lg:h-20 bg-white/80 backdrop-blur-md shadow-sm flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 border-b border-gray-100 min-w-0">
+        <header className="h-16 lg:h-20 bg-white/90 backdrop-blur-md shadow-sm flex items-center justify-between px-4 lg:px-8 fixed top-0 right-0 lg:right-64 left-0 z-40 border-b border-gray-100 min-w-0 transition-all duration-300">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -111,6 +111,9 @@ export default function DashboardLayout({
             </div>
           </div>
         </header>
+
+        {/* Header Spacer */}
+        <div className="h-16 lg:h-20"></div>
 
         <main className="flex-1 p-4 lg:p-10 w-full max-w-full overflow-x-hidden bg-gray-50/50">
           <div className="max-w-[1400px] mx-auto w-full">

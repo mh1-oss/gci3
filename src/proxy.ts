@@ -4,16 +4,19 @@ import type { NextRequest } from "next/server";
 
 export const proxy = auth((req: NextRequest & { auth: any }) => {
   const isLoggedin = !!req.auth;
+  const isAdmin = req.auth?.user?.role === "admin";
   const { nextUrl } = req;
-
+  
   const isDashboardRoute = nextUrl.pathname.startsWith("/admin/dashboard");
   const isLoginRoute = nextUrl.pathname === "/admin/login";
 
-  if (isDashboardRoute && !isLoggedin) {
+  // Redirect to login if user is not logged in OR is not an admin when trying to access dashboard
+  if (isDashboardRoute && (!isLoggedin || !isAdmin)) {
     return NextResponse.redirect(new URL("/admin/login", nextUrl));
   }
 
-  if (isLoginRoute && isLoggedin) {
+  // Redirect to dashboard if logged-in admin tries to access login page
+  if (isLoginRoute && isLoggedin && isAdmin) {
     return NextResponse.redirect(new URL("/admin/dashboard", nextUrl));
   }
 

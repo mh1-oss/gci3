@@ -37,9 +37,11 @@ export default function ImagePreview({ initialUrl, name, label, helperText }: Im
     };
   }, [previewUrl]);
 
+  const idSuffix = name.replace(/\s+/g, '-').toLowerCase();
+
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-bold text-gray-700 text-right">{label}</label>
+      <label htmlFor={`${idSuffix}-url`} className="block text-sm font-bold text-gray-700 text-right cursor-pointer">{label}</label>
       
       {previewUrl ? (
         <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center">
@@ -62,11 +64,13 @@ export default function ImagePreview({ initialUrl, name, label, helperText }: Im
 
       <div className="space-y-2">
         <div className="relative">
+          <label htmlFor={`${idSuffix}-url`} className="sr-only">رابط الصورة {label}</label>
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <LinkIcon className="h-4 w-4 text-gray-400" />
           </div>
           <input 
             type="text" 
+            id={`${idSuffix}-url`}
             name={`${name}Url`}
             defaultValue={initialUrl || ""} 
             onChange={handleUrlChange}
@@ -77,8 +81,10 @@ export default function ImagePreview({ initialUrl, name, label, helperText }: Im
         </div>
         
         <div className="relative flex items-center gap-2">
+          <label htmlFor={`${idSuffix}-file`} className="sr-only">رفع ملف {label}</label>
           <input 
             type="file" 
+            id={`${idSuffix}-file`}
             name={`${name}File`}
             ref={fileInputRef}
             onChange={handleFileChange}
