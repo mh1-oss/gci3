@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, decimal, uuid, AnyPgColumn, date } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, decimal, uuid, AnyPgColumn, date, jsonb } from "drizzle-orm/pg-core";
 
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -50,6 +50,12 @@ export const products = pgTable("products", {
   pdfKey: text("pdf_key"), // R2 key
   pdfSource: text("pdf_source").default("external"), // 'r2' or 'external'
   subsidiaryId: uuid("subsidiary_id").references(() => subsidiaries.id),
+  hasSizes: text("has_sizes").default("false"),
+  sizes: jsonb("sizes"),
+  hasColors: text("has_colors").default("false"),
+  colors: jsonb("colors"),
+  variantInventory: jsonb("variant_inventory"),
+  unifyPrice: text("unify_price").default("true"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

@@ -46,10 +46,31 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
                 </span>
               </td>
               <td className="px-6 py-4">
-                {editingId === product.id ? (
+                {product.hasSizes === "true" ? (
+                  <div className="text-sm">
+                    <span className="font-bold text-lg block mb-2">{product.stock} <span className="text-xs text-gray-500 font-normal">(المجموع)</span></span>
+                    <div className="flex flex-wrap gap-1.5 max-w-xs">
+                      {product.hasColors === "true" && product.variantInventory ? (
+                        product.variantInventory.map((v: any, i: number) => (
+                           <span key={i} className="px-2 py-1 bg-gray-50 border border-gray-100 text-[10px] text-gray-600 rounded whitespace-nowrap">
+                             <span className="text-gray-400">{v.size} {v.color && `- ${v.color}`}:</span> <b className="text-brand-navy text-xs">{v.stock}</b>
+                           </span>
+                        ))
+                      ) : product.sizes ? (
+                        product.sizes.map((s: any, i: number) => (
+                           <span key={i} className="px-2 py-1 bg-gray-50 border border-gray-100 text-[10px] text-gray-600 rounded whitespace-nowrap">
+                             <span className="text-gray-400">{s.name}:</span> <b className="text-brand-navy text-xs">{s.stock}</b>
+                           </span>
+                        ))
+                      ) : null}
+                    </div>
+                  </div>
+                ) : editingId === product.id ? (
                   <div className="flex items-center gap-2">
                     <input 
                       type="number" 
+                      step="1"
+                      min="0"
                       value={editValue} 
                       onChange={(e) => setEditValue(e.target.value)}
                       className="w-20 px-2 py-1 border border-brand-red rounded outline-none text-gray-900"
@@ -57,7 +78,7 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
                     />
                   </div>
                 ) : (
-                  <span className="font-bold">{product.stock}</span>
+                  <span className="font-bold text-lg">{product.stock}</span>
                 )}
               </td>
               <td className="px-6 py-4">
@@ -79,7 +100,12 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
                 )}
               </td>
               <td className="px-6 py-4">
-                {editingId === product.id ? (
+                {product.hasSizes === "true" ? (
+                  <a href={`/admin/dashboard/products/${product.id}/edit`} className="flex items-center gap-2 text-brand-navy hover:text-brand-red transition font-medium text-sm">
+                    <Edit2 className="w-4 h-4" />
+                    <span>تعديل التفاصيل</span>
+                  </a>
+                ) : editingId === product.id ? (
                   <div className="flex items-center gap-2">
                     <button onClick={() => handleUpdate(product.id)} className="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition">
                       <Check className="w-4 h-4" />
@@ -94,7 +120,7 @@ export default function InventoryList({ initialProducts }: { initialProducts: an
                       setEditingId(product.id);
                       setEditValue(product.stock.toString());
                     }}
-                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition font-medium"
+                    className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition font-medium text-sm"
                   >
                     <Edit2 className="w-4 h-4" />
                     <span>تعديل الكمية</span>

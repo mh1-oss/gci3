@@ -11,7 +11,7 @@ import { AuthError } from "next-auth";
 
 import { requireAdmin } from "@/lib/auth-helpers";
 import { uploadToR2, deleteFromR2 } from "@/lib/s3";
-import { settingsSchema, subsidiarySchema } from "@/lib/validations";
+import { settingsSchema, subsidiarySchema, productSchema } from "@/lib/validations";
 
 export async function loginAdmin(formData: FormData) {
   try {
@@ -360,6 +360,36 @@ export async function createProduct(formData: FormData) {
     const pdfUrl = formData.get("pdfUrl") as string;
     const pdfFile = formData.get("pdfFile") as File;
     const subsidiaryId = formData.get("subsidiaryId") as string;
+    const hasSizes = formData.get("hasSizes") === "on" ? "true" : "false";
+    const hasColors = formData.get("hasColors") === "on" ? "true" : "false";
+    const sizesRaw = formData.get("sizes") as string;
+    const colorsRaw = formData.get("colors") as string;
+    const variantInventoryRaw = formData.get("variantInventory") as string;
+    const unifyPrice = formData.get("unifyPrice") === "on" ? "true" : "false";
+    
+    let sizes = sizesRaw ? JSON.parse(sizesRaw) : [];
+    let colors = colorsRaw ? JSON.parse(colorsRaw) : [];
+    let variantInventory = variantInventoryRaw ? JSON.parse(variantInventoryRaw) : [];
+
+    // If sizes are enabled, set price to the first size's price and calculate total stock
+    let finalPrice = price;
+    let finalStock = stock;
+    
+    if (hasSizes === "true" && hasColors === "true" && variantInventory.length > 0) {
+      finalPrice = variantInventory[0].price || price;
+      const totalStock = variantInventory.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else if (hasSizes === "true" && sizes.length > 0) {
+      finalPrice = sizes[0].price;
+      const totalStock = sizes.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else if (hasColors === "true" && variantInventory.length > 0) {
+      finalPrice = variantInventory[0].price || price;
+      const totalStock = variantInventory.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else {
+      finalStock = Math.floor(Number(stock) || 0).toString();
+    }
 
     const image = await handleMediaUpdate(imageUrl, imageFile, null, null, "products/images");
     const pdf = await handleMediaUpdate(pdfUrl, pdfFile, null, null, "products/pdfs");
@@ -367,8 +397,8 @@ export async function createProduct(formData: FormData) {
     await db.insert(products).values({
       title,
       category,
-      price,
-      stock,
+      price: finalPrice,
+      stock: finalStock,
       description,
       imageUrl: image.url || "/images/product.png",
       imageKey: image.key,
@@ -377,6 +407,12 @@ export async function createProduct(formData: FormData) {
       pdfKey: pdf.key,
       pdfSource: pdf.source,
       subsidiaryId: subsidiaryId || null,
+      hasSizes,
+      sizes,
+      hasColors,
+      colors,
+      variantInventory,
+      unifyPrice,
     });
 
     revalidatePath("/admin/dashboard/products");
@@ -406,6 +442,36 @@ export async function updateProduct(id: string, formData: FormData) {
     const pdfUrl = formData.get("pdfUrl") as string;
     const pdfFile = formData.get("pdfFile") as File;
     const subsidiaryId = formData.get("subsidiaryId") as string;
+    const hasSizes = formData.get("hasSizes") === "on" ? "true" : "false";
+    const hasColors = formData.get("hasColors") === "on" ? "true" : "false";
+    const sizesRaw = formData.get("sizes") as string;
+    const colorsRaw = formData.get("colors") as string;
+    const variantInventoryRaw = formData.get("variantInventory") as string;
+    const unifyPrice = formData.get("unifyPrice") === "on" ? "true" : "false";
+    
+    let sizes = sizesRaw ? JSON.parse(sizesRaw) : [];
+    let colors = colorsRaw ? JSON.parse(colorsRaw) : [];
+    let variantInventory = variantInventoryRaw ? JSON.parse(variantInventoryRaw) : [];
+
+    // If sizes are enabled, set price to the first size's price and calculate total stock
+    let finalPrice = price;
+    let finalStock = stock;
+
+    if (hasSizes === "true" && hasColors === "true" && variantInventory.length > 0) {
+      finalPrice = variantInventory[0].price || price;
+      const totalStock = variantInventory.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else if (hasSizes === "true" && sizes.length > 0) {
+      finalPrice = sizes[0].price;
+      const totalStock = sizes.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else if (hasColors === "true" && variantInventory.length > 0) {
+      finalPrice = variantInventory[0].price || price;
+      const totalStock = variantInventory.reduce((acc: number, curr: any) => acc + (Math.floor(Number(curr.stock)) || 0), 0);
+      finalStock = totalStock.toString();
+    } else {
+      finalStock = Math.floor(Number(stock) || 0).toString();
+    }
 
     const image = await handleMediaUpdate(
       imageUrl, 
@@ -426,7 +492,7 @@ export async function updateProduct(id: string, formData: FormData) {
     const updateData: any = {
       title,
       category,
-      price,
+      price: finalPrice,
       description,
       imageUrl: image.url || "/images/product.png",
       imageKey: image.key,
@@ -435,10 +501,16 @@ export async function updateProduct(id: string, formData: FormData) {
       pdfKey: pdf.key,
       pdfSource: pdf.source,
       subsidiaryId: subsidiaryId || null,
+      hasSizes,
+      sizes,
+      hasColors,
+      colors,
+      variantInventory,
+      unifyPrice,
     };
 
-    if (stock !== null) {
-      updateData.stock = stock;
+    if (finalStock !== null) {
+      updateData.stock = finalStock;
     }
 
     await db.update(products).set(updateData).where(eq(products.id, id));
@@ -454,7 +526,8 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function updateStock(productId: string, quantity: string) {
-  await db.update(products).set({ stock: quantity }).where(eq(products.id, productId));
+  const cleanQuantity = Math.floor(Number(quantity) || 0).toString();
+  await db.update(products).set({ stock: cleanQuantity }).where(eq(products.id, productId));
   revalidatePath("/admin/dashboard/inventory");
   revalidatePath("/products");
   return { success: true };

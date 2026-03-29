@@ -9,6 +9,24 @@ export const productSchema = z.object({
   subsidiaryId: z.string().uuid().optional().nullable(),
   imageUrl: z.string().optional(),
   pdfUrl: z.string().optional(),
+  hasSizes: z.enum(["true", "false"]).optional().default("false"),
+  sizes: z.array(z.object({
+    name: z.string().min(1, "اسم الحجم مطلوب"),
+    price: z.string().min(1, "سعر الحجم مطلوب"),
+    stock: z.string().default("0"),
+  })).optional().nullable(),
+  hasColors: z.enum(["true", "false"]).optional().default("false"),
+  colors: z.array(z.object({
+    name: z.string().min(1, "اسم اللون مطلوب"),
+    hex: z.string().startsWith("#", "يجب أن يبدأ رمز اللون بـ #").min(4, "رمز اللون غير صالح"),
+  })).optional().nullable(),
+  variantInventory: z.array(z.object({
+    size: z.string().optional(),
+    color: z.string().optional(),
+    stock: z.string().default("0"),
+    price: z.string().optional(),
+  })).optional().nullable(),
+  unifyPrice: z.enum(["true", "false"]).optional().default("true"),
 });
 
 export const projectSchema = z.object({

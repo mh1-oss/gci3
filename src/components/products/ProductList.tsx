@@ -14,6 +14,12 @@ type Product = {
   imageUrl: string | null;
   price: string | null;
   stock: string | null;
+  hasSizes?: string | null;
+  sizes?: any;
+  hasColors?: string | null;
+  colors?: any;
+  variantInventory?: any;
+  unifyPrice?: string | null;
   pdfUrl?: string | null;
   subsidiaryId?: string | null;
   createdAt?: Date | null;
@@ -206,7 +212,7 @@ export default function ProductList({
                         <div className="flex flex-col">
                           {showPrice && product.price && product.price !== "0.00" ? (
                             <>
-                              <span className="text-xs text-gray-400 font-bold uppercase">السعر التقريبي</span>
+                              <span className="text-xs text-gray-400 font-bold uppercase">{product.hasSizes === "true" ? "يبدأ من" : "السعر التقريبي"}</span>
                               <span className="text-2xl font-black text-emerald-600">{formatPrice(product.price)}</span>
                             </>
                           ) : (

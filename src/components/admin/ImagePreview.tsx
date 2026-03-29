@@ -76,17 +76,30 @@ export default function ImagePreview({ initialUrl, name, label, helperText }: Im
           />
         </div>
         
-        <div className="relative">
+        <div className="relative flex items-center gap-2">
           <input 
             type="file" 
             name={`${name}File`}
             ref={fileInputRef}
             onChange={handleFileChange}
             accept="image/*" 
-            className="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-navy/5 file:text-brand-navy hover:file:bg-brand-navy/10 transition-all cursor-pointer" 
+            className="flex-1 text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-navy/5 file:text-brand-navy hover:file:bg-brand-navy/10 transition-all cursor-pointer" 
           />
-          {helperText && <p className="text-[10px] text-gray-400 mt-1 text-right">{helperText}</p>}
+          <button
+            type="button"
+            onClick={() => {
+              setPreviewUrl(initialUrl);
+              if (fileInputRef.current) fileInputRef.current.value = "";
+              const urlInput = document.getElementsByName(`${name}Url`)[0] as HTMLInputElement;
+              if (urlInput) urlInput.value = initialUrl || "";
+            }}
+            className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+            title="إعادة تعيين"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
+        {helperText && <p className="text-[10px] text-gray-400 mt-1 text-right">{helperText}</p>}
       </div>
     </div>
   );

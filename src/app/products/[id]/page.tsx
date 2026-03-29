@@ -3,8 +3,9 @@ import { products, siteSettings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Package, Tag, Layers, DownloadCloud } from "lucide-react";
+import { ArrowRight, CheckCircle2, Tag, Layers, DownloadCloud } from "lucide-react";
 import PriceDisplay from "@/components/ui/PriceDisplay";
+import ProductActions from "@/components/products/ProductActions";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -83,12 +84,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
                 <h1 className="text-3xl md:text-5xl font-extrabold text-brand-navy leading-tight">
                   {product.title}
                 </h1>
-                {showPrice && (
-                  <PriceDisplay 
-                    priceUSD={product.price} 
-                    className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-2 rounded-xl text-2xl font-bold shadow-sm whitespace-nowrap mr-4" 
-                  />
-                )}
+                {/* Price is now handled inside ProductActions for dynamic switching */}
               </div>
               
               <div className="h-1 w-20 bg-brand-red rounded-full mb-8"></div>
@@ -97,33 +93,23 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
                 {product.description || "معلومات هذا المنتج قيد التحديث وسنوافيكم بكامل التفاصيل الفنية قريباً."}
               </p>
 
-              <div className="space-y-4 mb-10">
+              <div className="mb-10">
+                <ProductActions 
+                  product={product as any} 
+                  showPrice={showPrice} 
+                  showStock={showStock}
+                />
+              </div>
+
+              <div className="space-y-4 mb-10 border-t border-gray-50 pt-8">
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                   <span className="text-gray-700 font-medium">جودة عالية وضمان طويل الأمد</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Layers className="w-6 h-6 text-emerald-500" />
+                  <Layers className="w-5 h-5 text-emerald-500" />
                   <span className="text-gray-700 font-medium">كفاءة في التغطية وتقليل الاستهلاك</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Package className="w-6 h-6 text-emerald-500" />
-                  <span className="text-gray-700 font-medium">متوفر بأحجام متنوعة (1 جالون، 5 جالون)</span>
-                </div>
-                
-                {showStock && (
-                  <div className="mt-4">
-                    {Number(product.stock) <= 0 ? (
-                      <span className="inline-flex items-center px-4 py-2 bg-red-100 text-red-600 rounded-xl text-sm font-bold font-arabic shadow-sm animate-pulse">
-                        نفدت الكمية
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl text-sm font-bold font-arabic shadow-sm">
-                        متوفر في المخزن
-                      </span>
-                    )}
-                  </div>
-                )}
               </div>
 
               <div className="bg-gray-50 border border-gray-100 p-6 rounded-2xl flex flex-col sm:flex-row gap-4 justify-between items-center mt-auto">
