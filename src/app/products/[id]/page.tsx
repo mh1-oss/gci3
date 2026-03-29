@@ -1,9 +1,9 @@
 import { db } from "@/db";
-import { products, siteSettings } from "@/db/schema";
+import { products, siteSettings, subsidiaries } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Tag, Layers, DownloadCloud } from "lucide-react";
+import { ArrowRight, CheckCircle2, Tag, Layers, DownloadCloud, Building2 } from "lucide-react";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 import ProductActions from "@/components/products/ProductActions";
 import { Metadata } from "next";
@@ -44,6 +44,10 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   }
 
   const product = productData[0];
+  const subsidiaryData = product.subsidiaryId 
+    ? await db.select().from(subsidiaries).where(eq(subsidiaries.id, product.subsidiaryId)).limit(1)
+    : [];
+  const productSubsidiary = subsidiaryData[0] || null;
   const settings = allSettings[0] || { showPrice: "true", showStock: "true" };
   const showPrice = settings.showPrice === "true";
   const showStock = settings.showStock === "true";
@@ -61,16 +65,32 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
           <div className="grid grid-cols-1 lg:grid-cols-2">
             
             {/* Image Section */}
-            <div className="relative h-[400px] lg:h-full bg-gray-50 group flex items-center justify-center p-8">
+            <div className="relative h-[350px] md:h-[500px] lg:h-full bg-gray-50 group flex items-center justify-center p-6 md:p-12 overflow-hidden">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={product.imageUrl || "/images/product.png"} 
                 alt={product.title} 
-                className="w-full max-h-[500px] object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-contain drop-shadow-2xl group-hover:scale-105 transition-transform duration-500 z-10"
               />
-              <div className="absolute top-6 right-6 bg-brand-navy/90 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">
+              
+              {/* Category Badge */}
+              <div className="absolute top-6 right-6 bg-brand-navy/90 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-black shadow-xl z-20 border border-white/10">
                 {product.category}
               </div>
+
+              {/* Subsidiary Logo Overlay - Fixed to top-left to avoid overlaps */}
+              {productSubsidiary && (
+                <div className="absolute top-6 left-6 w-16 h-16 bg-white rounded-full shadow-2xl border border-gray-100 p-2.5 flex items-center justify-center overflow-hidden z-20 hover:scale-110 transition-transform group/sub">
+                   {productSubsidiary.logoUrl ? (
+                     <img src={productSubsidiary.logoUrl} alt={productSubsidiary.name} className="w-full h-full object-contain" />
+                   ) : (
+                     <Building2 className="w-8 h-8 text-gray-200" />
+                   )}
+                   <div className="absolute inset-0 bg-brand-navy/80 text-white text-[10px] flex items-center justify-center opacity-0 group-hover/sub:opacity-100 transition-opacity font-bold text-center p-2">
+                      {productSubsidiary.name}
+                   </div>
+                </div>
+              )}
             </div>
 
             {/* Details Section */}

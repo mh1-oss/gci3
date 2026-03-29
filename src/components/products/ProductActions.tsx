@@ -48,33 +48,40 @@ export default function ProductActions({ product, showPrice, showStock }: Produc
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* Price & Stock Section */}
-      <div className="flex flex-col md:flex-row md:items-center gap-6">
+      <div className="flex flex-col gap-4">
         {showPrice && (
-          <div className="flex items-center gap-4">
-            <PriceDisplay 
-              priceUSD={currentPrice} 
-              className="bg-emerald-50 border border-emerald-100 text-emerald-700 px-6 py-3 rounded-2xl text-3xl font-black shadow-sm" 
-            />
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-baseline gap-3">
+              <PriceDisplay 
+                priceUSD={currentPrice} 
+                className="text-emerald-600 text-4xl font-black" 
+              />
+              {product.hasSizes === "true" && (
+                <span className="text-brand-red text-xs font-black bg-brand-red/5 px-2 py-1 rounded-md border border-brand-red/10">
+                  {product.hasColors === "true" ? `${selectedSize.name} / ${selectedColor?.name}` : `حجم ${selectedSize.name}`}
+                </span>
+              )}
+            </div>
             {product.hasSizes === "true" && (
-              <span className="text-gray-400 text-sm font-medium whitespace-nowrap">
-                (سعر {product.hasColors === "true" ? `الحجم ${selectedSize.name} واللون ${selectedColor?.name}` : `حجم ${selectedSize.name}`})
-              </span>
+              <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">
+                السعر للمتغير المحدد حالياً
+              </p>
             )}
           </div>
         )}
 
         {showStock && (
           <div className={cn(
-            "px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 w-fit",
+            "px-4 py-2 rounded-xl text-xs font-black border flex items-center gap-2 w-fit shadow-sm transition-colors",
             currentStock > 0 
               ? "bg-emerald-50 border-emerald-100 text-emerald-700" 
               : "bg-red-50 border-red-100 text-red-600"
           )}>
             <div className={cn(
-              "w-2 h-2 rounded-full animate-pulse",
-              currentStock > 0 ? "bg-emerald-500" : "bg-red-500"
+              "w-2 h-2 rounded-full",
+              currentStock > 0 ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
             )} />
-            {currentStock > 0 ? `متوفر: ${currentStock} قطعة` : "نفد من المخزون"}
+            {currentStock > 0 ? `متوفر في المخزن: ${currentStock} قطع` : "عذراً، هذا المتغير غير متوفر"}
           </div>
         )}
       </div>

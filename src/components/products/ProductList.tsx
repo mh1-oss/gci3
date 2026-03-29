@@ -164,69 +164,77 @@ export default function ProductList({
                     key={product.id} 
                     className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group border border-gray-100 flex flex-col relative"
                   >
-                    <div className="relative h-72 overflow-hidden bg-gray-50 flex items-center justify-center p-8">
+                    <div className="relative h-80 overflow-hidden bg-gray-50 flex items-center justify-center p-12">
                       {/* Product Image */}
                       <img 
                         src={product.imageUrl || "/images/product.png"} 
                         alt={product.title}
-                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 drop-shadow-xl"
                       />
                       
-                      {/* Badge Overlay */}
-                      <div className="absolute top-6 right-6 flex flex-col gap-2 items-end">
-                        <div className="bg-brand-navy/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-black font-arabic shadow-xl">
+                      {/* Top Badge Overlay */}
+                      <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
+                        <div className="bg-brand-navy/90 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-[10px] font-black font-arabic shadow-xl border border-white/20">
                           {product.category}
                         </div>
-                        {showStock && Number(product.stock) <= 0 && (
-                          <div className="bg-white text-brand-red border-2 border-brand-red px-4 py-1.5 rounded-full text-xs font-black font-arabic shadow-xl animate-pulse">
-                            غير متوفر حالياً
-                          </div>
-                        )}
-                        {showStock && Number(product.stock) > 0 && (
-                          <div className="bg-emerald-500 text-white px-4 py-1.5 rounded-full text-xs font-black font-arabic shadow-xl flex items-center gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            متوفر بالمخزن
-                          </div>
-                        )}
                       </div>
 
-                      {/* Subsidiary Logo Overlay */}
+                      {/* Subsidiary Logo Overlay - Moved to top-left and made circular/premium */}
                       {productSubsidiary && (
-                        <div className="absolute bottom-4 left-4 w-12 h-12 bg-white rounded-xl shadow-lg border border-gray-100 p-2 flex items-center justify-center overflow-hidden">
+                        <div className="absolute top-4 left-4 w-12 h-12 bg-white rounded-full shadow-lg border border-gray-100 p-2 flex items-center justify-center overflow-hidden group/sub hover:scale-110 transition-transform">
                            {productSubsidiary.logoUrl ? (
                              <img src={productSubsidiary.logoUrl} alt={productSubsidiary.name} className="w-full h-full object-contain" />
                            ) : (
                              <Building2 className="w-6 h-6 text-gray-200" />
                            )}
+                           {/* Hover tooltip for brand */}
+                           <div className="absolute inset-0 bg-brand-navy/80 text-white text-[8px] flex items-center justify-center opacity-0 group-hover/sub:opacity-100 transition-opacity font-bold text-center p-1">
+                              {productSubsidiary.name}
+                           </div>
                         </div>
                       )}
+
+                      {/* Stock Badge Overlay - Bottom Right */}
+                      <div className="absolute bottom-4 right-4">
+                        {showStock && Number(product.stock) <= 0 && (
+                          <div className="bg-white/90 backdrop-blur-sm text-brand-red border border-brand-red/20 px-3 py-1 rounded-lg text-[10px] font-black font-arabic shadow-sm">
+                            غير متوفر
+                          </div>
+                        )}
+                        {showStock && Number(product.stock) > 0 && (
+                          <div className="bg-emerald-500 text-white px-3 py-1 rounded-lg text-[10px] font-black font-arabic shadow-lg flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" />
+                            متوفر
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="p-8 flex flex-col flex-grow font-arabic">
+                    <div className="p-6 flex flex-col flex-grow font-arabic">
                       <div className="mb-4">
-                        <h3 className="text-2xl font-black text-brand-navy group-hover:text-brand-red transition-colors leading-tight mb-2">{product.title}</h3>
-                        <p className="text-gray-400 text-sm line-clamp-2 h-10">{product.description}</p>
+                        <h3 className="text-xl font-black text-brand-navy group-hover:text-brand-red transition-colors leading-tight mb-2 line-clamp-1">{product.title}</h3>
+                        <p className="text-gray-400 text-xs line-clamp-2 min-h-[2.5rem] leading-relaxed">{product.description || "لا يوجد وصف متوفر لهذا المنتج حالياً."}</p>
                       </div>
                       
-                      <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
+                      <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between gap-4">
                         <div className="flex flex-col">
                           {showPrice && product.price && product.price !== "0.00" ? (
                             <>
-                              <span className="text-xs text-gray-400 font-bold uppercase">{product.hasSizes === "true" ? "يبدأ من" : "السعر التقريبي"}</span>
-                              <span className="text-2xl font-black text-emerald-600">{formatPrice(product.price)}</span>
+                              <span className="text-[10px] text-gray-400 font-bold uppercase">{product.hasSizes === "true" ? "يبدأ من" : "السعر"}</span>
+                              <span className="text-xl font-black text-emerald-600">{formatPrice(product.price)}</span>
                             </>
                           ) : (
                             <>
-                              <span className="text-xs text-gray-400 font-bold uppercase">الحالة</span>
-                              <span className="text-sm font-black text-brand-navy">تواصل لمعرفة السعر</span>
+                              <span className="text-[10px] text-gray-400 font-bold uppercase">الحالة</span>
+                              <span className="text-sm font-black text-brand-navy">تواصل للسعر</span>
                             </>
                           )}
                         </div>
                         <Link 
                           href={`/products/${product.id}`} 
-                          className="w-14 h-14 bg-gray-50 text-brand-navy rounded-2xl flex items-center justify-center hover:bg-brand-red hover:text-white transition-all duration-300 group/btn shadow-inner"
+                          className="w-12 h-12 bg-gray-50 text-brand-navy rounded-xl flex items-center justify-center hover:bg-brand-navy hover:text-white transition-all duration-300 group/btn shadow-sm"
                         >
-                          <ArrowLeft className="w-6 h-6 group-hover/btn:-translate-x-1 transition-transform" />
+                          <ArrowLeft className="w-5 h-5 group-hover/btn:-translate-x-1 transition-transform" />
                         </Link>
                       </div>
                     </div>
