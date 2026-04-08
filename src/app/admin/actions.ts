@@ -41,8 +41,7 @@ export async function loginAdmin(formData: FormData) {
       redirectTo: "/admin/dashboard",
     });
 
-    // 2. Clear attempts on success
-    await db.delete(loginAttempts).where(eq(loginAttempts.ip, ip));
+    // Clear attempts happens inside the catch when `isRedirectError` triggers
   } catch (error) {
     if (error instanceof AuthError) {
       // 3. Increment attempts on failure
@@ -69,6 +68,19 @@ export async function loginAdmin(formData: FormData) {
           return redirect("/admin/login?error=2");
       }
     }
+
+    const isRedirect =
+      error &&
+      typeof error === "object" &&
+      "digest" in error &&
+      typeof (error as any).digest === "string" &&
+      (error as any).digest.startsWith("NEXT_REDIRECT");
+
+    if (isRedirect) {
+      // 2. Clear attempts on success
+      await db.delete(loginAttempts).where(eq(loginAttempts.ip, ip));
+    }
+
     throw error;
   }
 }
