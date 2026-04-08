@@ -23,8 +23,20 @@ export default function ProjectForm({ project }: { project: any }) {
            router.push("/admin/dashboard/projects");
            router.refresh();
         }
-      } catch (err) {
-        alert("فشل الحفظ. تأكد من إعدادات Cloudflare R2.");
+      } catch (err: any) {
+        const isRedirect =
+          err &&
+          typeof err === "object" &&
+          "digest" in err &&
+          typeof err.digest === "string" &&
+          err.digest.startsWith("NEXT_REDIRECT");
+        
+        if (isRedirect) {
+          throw err;
+        }
+        
+        console.error("Form Submit Error:", err);
+        alert(err.message || "فشل الحفظ. تأكد من حجم الملفات (الحد الأقصى 1 ميغابايت) أو اتصال الإنترنت.");
       }
     });
   };
