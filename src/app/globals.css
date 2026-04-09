@@ -44,6 +44,26 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility mask-fade-right {
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+@utility mask-fade-left {
+  mask-image: linear-gradient(to left, black 85%, transparent 100%);
+}
+
+@utility mask-fade-both {
+  mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+
 @keyframes blob {
   0% {
     transform: translate(0px, 0px) scale(1);
