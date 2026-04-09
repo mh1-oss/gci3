@@ -191,6 +191,7 @@ export default function ProductAddForm({ categories: initialCategories, subsidia
         </div>
 
         <SearchableSelect
+          id="category"
           name="category"
           label="القسم"
           placeholder="اختر أو ابحث عن قسم..."
@@ -202,6 +203,7 @@ export default function ProductAddForm({ categories: initialCategories, subsidia
         />
 
         <SearchableSelect
+          id="subsidiaryId"
           name="subsidiaryId"
           label="الشركة المصنعة"
           placeholder="اختر الشركة المصنعة..."

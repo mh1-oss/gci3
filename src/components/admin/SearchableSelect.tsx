@@ -14,6 +14,7 @@ interface SearchableSelectProps {
   defaultValue?: string;
   name: string;
   label: string;
+  id?: string;
   placeholder?: string;
   allowCustom?: boolean;
   onCreateCustom?: (name: string) => Promise<Option | null>;
@@ -27,6 +28,7 @@ export default function SearchableSelect({
   defaultValue = "",
   name,
   label,
+  id,
   placeholder = "ابحث...",
   allowCustom = false,
   onCreateCustom,
@@ -39,11 +41,19 @@ export default function SearchableSelect({
   const [selectedValue, setSelectedValue] = useState(defaultValue);
   const [isCreating, setIsCreating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Synchronize local state with defaultValue prop if it changes
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
+
+  // Use the provided id or fall back to the name
+  const inputId = id || `select-${name}`;
 
   // Find the label for the current selected value
   const selectedLabel = useMemo(() => {
-    return options.find((opt) => opt.id === selectedValue || opt.name === selectedValue)?.name || "";
+    return options.find((opt) => String(opt.id) === String(selectedValue) || String(opt.name) === String(selectedValue))?.name || "";
   }, [options, selectedValue]);
 
   // Filter options based on search term
@@ -66,9 +76,7 @@ export default function SearchableSelect({
   }, []);
 
   const handleSelect = (option: Option) => {
-    // For categories, we might use name. For subsidiaries, we use ID.
-    // The name of the input determines what gets sent.
-    setSelectedValue(option.id);
+    setSelectedValue(String(option.id));
     setIsOpen(false);
     setSearchTerm("");
   };
@@ -80,7 +88,7 @@ export default function SearchableSelect({
     try {
       const newOption = await onCreateCustom(searchTerm);
       if (newOption) {
-        setSelectedValue(newOption.id);
+        setSelectedValue(String(newOption.id));
         setIsOpen(false);
         setSearchTerm("");
       }
@@ -93,10 +101,16 @@ export default function SearchableSelect({
 
   return (
     <div className={`space-y-2 relative ${className}`} ref={containerRef} dir="rtl">
-      <label className="block text-sm font-bold text-gray-700">{label}</label>
+      <label htmlFor={inputId} className="block text-sm font-bold text-gray-700 cursor-pointer">{label}</label>
       
       {/* Hidden input for form submission */}
-      <input type="hidden" name={name} value={selectedValue} required={required} />
+      <input 
+        id={inputId}
+        type="hidden" 
+        name={name} 
+        value={selectedValue || ""} 
+        required={required} 
+      />
 
       {/* Main Trigger */}
       <div 
@@ -138,13 +152,25 @@ export default function SearchableSelect({
             <div className="p-2 border-b border-gray-100 flex items-center gap-2 sticky top-0 bg-white">
               <Search className="w-4 h-4 text-gray-400 shrink-0" />
               <input
-                ref={inputRef}
+                ref={searchInputRef}
                 autoFocus
                 type="text"
                 className="w-full text-sm outline-none font-bold text-gray-900 py-1"
                 placeholder="ابحث..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  // Prevent Enter from submitting the parent form
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    // If there's an exact match or custom add is available, could be handled here
+                    if (allowCustom && searchTerm && filteredOptions.length === 0) {
+                      handleAddCustom();
+                    } else if (filteredOptions.length === 1) {
+                      handleSelect(filteredOptions[0]);
+                    }
+                  }
+                }}
                 onClick={(e) => e.stopPropagation()}
               />
               {searchTerm && (
