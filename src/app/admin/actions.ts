@@ -605,6 +605,18 @@ export async function quickCreateCategory(name: string) {
   return newCat;
 }
 
+export async function updateCategory(id: string, formData: FormData) {
+  await requireAdmin();
+  const name = formData.get("name") as string;
+  
+  if (name) {
+    await db.update(categories).set({ name }).where(eq(categories.id, id));
+  }
+
+  revalidatePath("/admin/dashboard/categories");
+  revalidatePath("/admin/dashboard/products");
+  return { success: true };
+}
 
 export async function deleteCategory(id: string) {
   await requireAdmin();
