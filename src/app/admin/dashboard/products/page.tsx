@@ -1,14 +1,76 @@
 import { db } from "@/db";
-import { products } from "@/db/schema";
-import { Plus, Search, Edit } from "lucide-react";
+import { products, subsidiaries, categories } from "@/db/schema";
+import { Plus, Edit } from "lucide-react";
 import Link from "next/link";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
-import { desc } from "drizzle-orm";
+import { desc, eq, and, or, ilike, sql, notInArray } from "drizzle-orm";
+import ProductFilter from "@/components/admin/ProductFilter";
+import ProductSearch from "@/components/admin/ProductSearch";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminProductsPage() {
-  const allProducts = await db.select().from(products).orderBy(desc(products.createdAt));
+interface PageProps {
+  searchParams: Promise<{
+    category?: string;
+    search?: string;
+  }>;
+}
+
+export default async function AdminProductsPage({ searchParams }: PageProps) {
+  const { category, search } = await searchParams;
+  const masterCategories = await db.select().from(categories).orderBy(desc(categories.createdAt));
+  const categoryList = masterCategories.map((c) => c.name);
+
+  // Build filters
+  const conditions = [];
+
+  if (category) {
+    if (category === "none") {
+      // Products with empty category OR category not in master list
+      if (categoryList.length > 0) {
+        conditions.push(
+          or(
+            eq(products.category, ""),
+            sql`${products.category} IS NULL`,
+            notInArray(products.category, categoryList)
+          )
+        );
+      } else {
+        // If no master categories exist, only check for null/empty
+        conditions.push(or(eq(products.category, ""), sql`${products.category} IS NULL`));
+      }
+    } else if (category !== "all") {
+      conditions.push(eq(products.category, category));
+    }
+  }
+
+  if (search) {
+    conditions.push(
+      or(
+        ilike(products.title, `%${search}%`),
+        ilike(products.description, `%${search}%`)
+      )
+    );
+  }
+
+  const query = db
+    .select({
+      id: products.id,
+      title: products.title,
+      category: products.category,
+      price: products.price,
+      stock: products.stock,
+      imageUrl: products.imageUrl,
+      subsidiaryName: subsidiaries.name,
+    })
+    .from(products)
+    .leftJoin(subsidiaries, eq(products.subsidiaryId, subsidiaries.id));
+
+  if (conditions.length > 0) {
+    query.where(and(...conditions));
+  }
+
+  const allProducts = await query.orderBy(desc(products.createdAt));
 
   return (
     <div className="space-y-6">
@@ -21,24 +83,23 @@ export default async function AdminProductsPage() {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <div className="relative w-full max-w-md">
-            <input 
-              type="text" 
-              placeholder="ابحث عن منتج..." 
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-navy font-arabic text-right text-gray-900 placeholder:text-gray-400"
-              dir="rtl"
-            />
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+        <div className="p-6 border-b border-gray-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+            <ProductSearch defaultValue={search} />
+            <ProductFilter categories={categoryList} />
+          </div>
+          <div className="text-sm text-gray-400 font-arabic">
+            إجمالي المنتجات: <span className="font-bold text-brand-navy">{allProducts.length}</span>
           </div>
         </div>
 
         <div className="overflow-x-auto border-t border-gray-100">
-          <table className="w-full text-right font-arabic min-w-[800px]">
+          <table className="w-full text-right font-arabic min-w-[900px]">
             <thead className="bg-gray-50 text-gray-500 text-sm">
               <tr>
                 <th className="px-6 py-4 font-medium">صورة المنتج</th>
                 <th className="px-6 py-4 font-medium text-right">اسم المنتج</th>
+                <th className="px-6 py-4 font-medium text-right">المجموعة</th>
                 <th className="px-6 py-4 font-medium text-right">القسم</th>
                 <th className="px-6 py-4 font-medium text-right">السعر</th>
                 <th className="px-6 py-4 font-medium text-right">المخزن</th>
@@ -53,7 +114,20 @@ export default async function AdminProductsPage() {
                     <img src={product.imageUrl || "/images/product.png"} alt={product.title} className="w-12 h-12 object-contain rounded-md" />
                   </td>
                   <td className="px-6 py-4 font-medium text-brand-navy">{product.title}</td>
-                  <td className="px-6 py-4"><span className="bg-blue-50 text-brand-navy px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">{product.category}</span></td>
+                  <td className="px-6 py-4">
+                    {product.subsidiaryName ? (
+                      <span className="text-gray-600 font-bold text-sm bg-gray-100 px-3 py-1 rounded-lg">
+                        {product.subsidiaryName}
+                      </span>
+                    ) : (
+                      <span className="text-gray-300 italic text-xs">بدون مجموعة</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="bg-blue-50 text-brand-navy px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
+                      {product.category || "غير مصنف"}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 font-bold text-emerald-600">${product.price ? `${product.price}` : '-'}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-md text-xs font-bold ${Number(product.stock) <= 0 ? 'bg-red-100 text-red-600' : Number(product.stock) < 10 ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
@@ -72,7 +146,7 @@ export default async function AdminProductsPage() {
               ))}
               {allProducts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-10 text-center text-gray-500">لا توجد منتجات حالياً.</td>
+                  <td colSpan={7} className="py-10 text-center text-gray-500">لا توجد منتجات تطابق البحث.</td>
                 </tr>
               )}
             </tbody>
