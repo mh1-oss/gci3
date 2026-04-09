@@ -385,7 +385,7 @@ export async function createQuote(formData: FormData) {
 
   revalidatePath("/admin/dashboard/accounting");
   revalidatePath("/admin/dashboard/inventory");
-  revalidatePath("/products");
+  revalidatePath("/products", "layout");
   redirect("/admin/dashboard/accounting");
 }
 
@@ -413,7 +413,7 @@ export async function deleteProduct(id: string) {
     await db.delete(products).where(eq(products.id, id));
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
-    revalidatePath("/products");
+    revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
     return { error: "فشل حذف المنتج." };
@@ -491,7 +491,7 @@ export async function createProduct(formData: FormData) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
-    revalidatePath("/products");
+    revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
     console.error("Create Product Error:", error);
@@ -591,7 +591,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
-    revalidatePath("/products");
+    revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
     console.error("Update Product Error:", error);
@@ -604,7 +604,7 @@ export async function updateStock(productId: string, quantity: string) {
   const cleanQuantity = Math.floor(Number(quantity) || 0).toString();
   await db.update(products).set({ stock: cleanQuantity }).where(eq(products.id, productId));
   revalidatePath("/admin/dashboard/inventory");
-  revalidatePath("/products");
+  revalidatePath("/products", "layout");
   return { success: true };
 }
 
@@ -686,7 +686,7 @@ export async function createProject(formData: FormData) {
     });
 
     revalidatePath("/admin/dashboard/projects");
-    revalidatePath("/projects");
+    revalidatePath("/projects", "layout");
     return { success: true };
   } catch (error) {
     console.error("Create Project Error:", error);
@@ -725,7 +725,7 @@ export async function updateProject(id: string, formData: FormData) {
     }).where(eq(projects.id, id));
 
     revalidatePath("/admin/dashboard/projects");
-    revalidatePath("/projects");
+    revalidatePath("/projects", "layout");
     return { success: true };
   } catch (error) {
     console.error("Update Project Error:", error);
@@ -744,7 +744,7 @@ export async function deleteProject(id: string) {
 
     await db.delete(projects).where(eq(projects.id, id));
     revalidatePath("/admin/dashboard/projects");
-    revalidatePath("/projects");
+    revalidatePath("/projects", "layout");
     return { success: true };
   } catch (error) {
     return { error: "فشل حذف المشروع." };

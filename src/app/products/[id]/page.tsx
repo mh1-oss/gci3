@@ -3,6 +3,8 @@ import { products, siteSettings, subsidiaries } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 import { ArrowRight, CheckCircle2, Tag, Layers, DownloadCloud, Building2 } from "lucide-react";
 import PriceDisplay from "@/components/ui/PriceDisplay";
 import ProductActions from "@/components/products/ProductActions";

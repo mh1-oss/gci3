@@ -1,5 +1,7 @@
 import { db } from "@/db";
 import { projects } from "@/db/schema";
+
+export const dynamic = "force-dynamic";
 import { eq } from "drizzle-orm";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";

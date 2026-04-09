@@ -1,5 +1,7 @@
-import { getSubsidiaries, createSubsidiary, updateSubsidiary, deleteSubsidiary, reorderSubsidiaries } from "@/app/admin/actions";
 import SubsidiaryList from "@/components/admin/SubsidiaryList";
+import { getSubsidiaries, createSubsidiary, updateSubsidiary, deleteSubsidiary, reorderSubsidiaries } from "@/app/admin/actions";
+
+export const dynamic = "force-dynamic";
 
 export default async function SubsidiariesPage() {
   const subsidiaries = await getSubsidiaries();
