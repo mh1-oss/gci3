@@ -598,6 +598,13 @@ export async function createCategory(formData: FormData) {
   redirect("/admin/dashboard/categories");
 }
 
+export async function quickCreateCategory(name: string) {
+  await requireAdmin();
+  const [newCat] = await db.insert(categories).values({ name }).returning();
+  revalidatePath("/admin/dashboard/categories");
+  return newCat;
+}
+
 
 export async function deleteCategory(id: string) {
   await requireAdmin();

@@ -2,19 +2,34 @@
 
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { updateProduct } from "@/app/admin/actions";
+import { updateProduct, quickCreateCategory } from "@/app/admin/actions";
 import { Save, ArrowRight, Plus, Trash2, Palette, Ruler, X } from "lucide-react";
 import Link from "next/link";
 import ImagePreview from "./ImagePreview";
+import SearchableSelect from "./SearchableSelect";
 
-export default function ProductForm({ product, categories, subsidiaries }: { 
+export default function ProductForm({ product, categories: initialCategories, subsidiaries }: { 
   product: any, 
   categories: any[], 
   subsidiaries: any[] 
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [categories, setCategories] = useState(initialCategories);
   const pdfInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCreateCategory = async (name: string) => {
+    try {
+      const newCat = await quickCreateCategory(name);
+      if (newCat) {
+        setCategories(prev => [...prev, newCat]);
+        return { id: newCat.name, name: newCat.name };
+      }
+    } catch (error) {
+      console.error("Failed to create category:", error);
+    }
+    return null;
+  };
 
   const [hasSizes, setHasSizes] = useState(product.hasSizes === "true");
   const [sizes, setSizes] = useState<{ name: string; price: string; stock: string }[]>(product.sizes || []);
@@ -183,35 +198,25 @@ export default function ProductForm({ product, categories, subsidiaries }: {
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="category" className="block text-sm font-bold text-gray-700">القسم</label>
-            <select 
-              name="category" 
-              id="category"
-              defaultValue={product.category || ""} 
-              required 
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold bg-white"
-            >
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.name}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
+          <SearchableSelect
+            name="category"
+            label="القسم"
+            placeholder="اختر أو ابحث عن قسم..."
+            options={categories.map(c => ({ id: c.name, name: c.name }))}
+            defaultValue={product.category || ""}
+            required
+            allowCustom
+            onCreateCustom={handleCreateCategory}
+          />
 
-          <div className="space-y-2">
-            <label htmlFor="subsidiaryId" className="block text-sm font-bold text-gray-700">الشركة المصنعة</label>
-            <select 
-              name="subsidiaryId" 
-              id="subsidiaryId"
-              defaultValue={product.subsidiaryId || ""} 
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none text-gray-900 placeholder:text-gray-700/80 placeholder:font-medium font-bold bg-white"
-            >
-              <option value="">لا يوجد (منتج عام للمجموعة)</option>
-              {subsidiaries.map((sub) => (
-                <option key={sub.id} value={sub.id}>{sub.name}</option>
-              ))}
-            </select>
-          </div>
+          <SearchableSelect
+            name="subsidiaryId"
+            label="الشركة المصنعة"
+            placeholder="اختر الشركة المصنعة..."
+            options={subsidiaries.map(s => ({ id: s.id, name: s.name }))}
+            defaultValue={product.subsidiaryId || ""}
+            allowCustom={false}
+          />
 
           <div className="space-y-2">
             <label htmlFor="price" className="block text-sm font-bold text-gray-700">السعر (بالدولار)</label>
