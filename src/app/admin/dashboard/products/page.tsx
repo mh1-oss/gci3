@@ -71,6 +71,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
         id: subsidiaries.id,
         name: subsidiaries.name,
         description: subsidiaries.description,
+        slogan: subsidiaries.slogan,
         logoUrl: subsidiaries.logoUrl,
       },
     })

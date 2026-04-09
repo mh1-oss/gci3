@@ -26,7 +26,7 @@ type Product = {
 };
 
 type Category = { id: string; name: string };
-type Subsidiary = { id: string; name: string; logoUrl: string | null };
+type Subsidiary = { id: string; name: string; slogan: string | null; logoUrl: string | null };
 
 export default function ProductList({ 
   initialProducts, 

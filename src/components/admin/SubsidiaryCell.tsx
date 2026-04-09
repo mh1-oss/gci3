@@ -7,6 +7,7 @@ interface Subsidiary {
   id: string;
   name: string;
   description: string | null;
+  slogan: string | null;
   logoUrl: string | null;
 }
 
