@@ -12,8 +12,10 @@ export const subsidiaries = pgTable("subsidiaries", {
   name: text("name").notNull(),
   description: text("description"),
   logoUrl: text("logo_url"),
+  slogan: text("slogan"), // New slogan field
   logoKey: text("logo_key"), // R2 key
   logoSource: text("logo_source").default("external"), // 'r2' or 'external'
+  sortOrder: text("sort_order").default("0"), // Manual sort order (using text to match existing decimal/text pattern or integer)
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -49,7 +51,7 @@ export const products = pgTable("products", {
   pdfUrl: text("pdf_url"),
   pdfKey: text("pdf_key"), // R2 key
   pdfSource: text("pdf_source").default("external"), // 'r2' or 'external'
-  subsidiaryId: uuid("subsidiary_id").references(() => subsidiaries.id),
+  subsidiaryId: uuid("subsidiary_id").references(() => subsidiaries.id, { onDelete: "set null" }),
   hasSizes: text("has_sizes").default("false"),
   sizes: jsonb("sizes"),
   hasColors: text("has_colors").default("false"),

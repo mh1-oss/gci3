@@ -6,6 +6,7 @@ import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 import { desc, eq, and, or, ilike, sql, notInArray } from "drizzle-orm";
 import ProductFilter from "@/components/admin/ProductFilter";
 import ProductSearch from "@/components/admin/ProductSearch";
+import SubsidiaryCell from "@/components/admin/SubsidiaryCell";
 
 export const dynamic = "force-dynamic";
 
@@ -13,16 +14,21 @@ interface PageProps {
   searchParams: Promise<{
     category?: string;
     search?: string;
+    subsidiary?: string;
   }>;
 }
 
 export default async function AdminProductsPage({ searchParams }: PageProps) {
-  const { category, search } = await searchParams;
+  const { category, search, subsidiary: subsidiaryId } = await searchParams;
   const masterCategories = await db.select().from(categories).orderBy(desc(categories.createdAt));
   const categoryList = masterCategories.map((c) => c.name);
 
   // Build filters
   const conditions = [];
+
+  if (subsidiaryId) {
+    conditions.push(eq(products.subsidiaryId, subsidiaryId));
+  }
 
   if (category) {
     if (category === "none") {
@@ -61,7 +67,12 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
       price: products.price,
       stock: products.stock,
       imageUrl: products.imageUrl,
-      subsidiaryName: subsidiaries.name,
+      subsidiary: {
+        id: subsidiaries.id,
+        name: subsidiaries.name,
+        description: subsidiaries.description,
+        logoUrl: subsidiaries.logoUrl,
+      },
     })
     .from(products)
     .leftJoin(subsidiaries, eq(products.subsidiaryId, subsidiaries.id));
@@ -115,13 +126,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
                   </td>
                   <td className="px-6 py-4 font-medium text-brand-navy">{product.title}</td>
                   <td className="px-6 py-4">
-                    {product.subsidiaryName ? (
-                      <span className="text-gray-600 font-bold text-sm bg-gray-100 px-3 py-1 rounded-lg">
-                        {product.subsidiaryName}
-                      </span>
-                    ) : (
-                      <span className="text-gray-300 italic text-xs">بدون مجموعة</span>
-                    )}
+                    <SubsidiaryCell subsidiary={product.subsidiary} />
                   </td>
                   <td className="px-6 py-4">
                     <span className="bg-blue-50 text-brand-navy px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">

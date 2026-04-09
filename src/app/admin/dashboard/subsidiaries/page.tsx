@@ -1,4 +1,4 @@
-import { getSubsidiaries } from "@/app/admin/actions";
+import { getSubsidiaries, createSubsidiary, updateSubsidiary, deleteSubsidiary, reorderSubsidiaries } from "@/app/admin/actions";
 import SubsidiaryList from "@/components/admin/SubsidiaryList";
 
 export default async function SubsidiariesPage() {
@@ -13,7 +13,13 @@ export default async function SubsidiariesPage() {
         </div>
       </div>
 
-      <SubsidiaryList initialSubsidiaries={subsidiaries} />
+      <SubsidiaryList 
+        initialSubsidiaries={subsidiaries} 
+        createAction={createSubsidiary}
+        updateAction={updateSubsidiary}
+        deleteAction={deleteSubsidiary}
+        reorderAction={reorderSubsidiaries}
+      />
     </div>
   );
 }

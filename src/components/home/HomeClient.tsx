@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, PaintBucket, Palette, Droplet, Shield, Building2 } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowLeft, CheckCircle2, PaintBucket, Palette, Droplet, Shield, Building2, Info } from "lucide-react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import SubsidiaryPreviewModal from "@/components/SubsidiaryPreviewModal";
 
 export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[] }) {
+  const [selectedSub, setSelectedSub] = useState<any | null>(null);
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
@@ -226,33 +228,56 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
                 <motion.div 
                   key={sub.id}
                   variants={fadeIn}
-                  whileHover={{ scale: 1.05 }}
-                  className="w-full max-w-[240px]"
+                  whileHover={{ y: -12 }}
+                  className="w-full max-w-[260px] relative group"
                 >
-                  <Link 
-                    href={`/products?subsidiary=${sub.id}`}
-                    className="group bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-brand-red/10 transition-all duration-300 text-center flex flex-col items-center justify-center gap-4 h-56 w-full transform-gpu"
+                  <div 
+                    className="relative w-full h-[320px] bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-brand-navy/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-brand-red/10 flex flex-col items-center transform-gpu"
                   >
-                    <div className="w-full h-24 relative flex items-center justify-center md:grayscale group-hover:grayscale-0 transition-all duration-500">
+                    {/* Glass Overlay on Hover */}
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      whileHover={{ opacity: 1 }}
+                      className="absolute inset-0 bg-brand-navy/5 backdrop-blur-[2px] z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    >
+                      <button 
+                        onClick={() => setSelectedSub(sub)}
+                        className="bg-white/80 backdrop-blur-md border border-white/40 text-brand-navy px-6 py-2.5 rounded-full font-bold shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 hover:bg-brand-red hover:text-white"
+                      >
+                        <Info className="w-4 h-4" />
+                        <span>تفاصيل العلامة</span>
+                      </button>
+                    </motion.div>
+
+                    {/* Logo Section */}
+                    <div className="w-full h-32 relative flex items-center justify-center mb-6 transition-all duration-500 scale-100 group-hover:scale-110">
                       {sub.logoUrl ? (
-                        <img src={sub.logoUrl} alt={sub.name} className="max-w-full max-h-full object-contain" />
-                      ) : (
-                        <Building2 className="w-12 h-12 text-gray-200" />
-                      )}
+                         <img src={sub.logoUrl} alt={sub.name} className="max-w-full max-h-full object-contain drop-shadow-sm" />
+                       ) : (
+                         <Building2 className="w-16 h-16 text-gray-100" />
+                       )}
                     </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-sm font-bold text-gray-400 group-hover:text-brand-navy transition-colors">{sub.name}</span>
-                      {sub.description && (
-                        <p className="text-[10px] text-gray-400 mt-1 line-clamp-2 max-w-[180px] leading-relaxed">
-                          {sub.description}
+
+                    {/* Text Section */}
+                    <div className="text-center w-full min-h-[90px] flex flex-col items-center justify-start gap-1.5 mt-auto">
+                      <span className="text-xl font-black text-brand-navy transition-colors group-hover:text-brand-red leading-tight">
+                        {sub.name}
+                      </span>
+                      {sub.slogan && (
+                        <p className="text-[13px] font-bold text-brand-red/60 line-clamp-2 max-w-[200px] leading-relaxed font-arabic">
+                          {sub.slogan}
                         </p>
                       )}
                     </div>
-                  </Link>
+                  </div>
                 </motion.div>
               ))}
-              
             </motion.div>
+
+            <SubsidiaryPreviewModal 
+              subsidiary={selectedSub} 
+              onClose={() => setSelectedSub(null)} 
+            />
             
             <div className="mt-12 text-center">
                <Link href="/products" className="inline-flex items-center gap-2 text-brand-navy font-bold hover:text-brand-red transition-all group">

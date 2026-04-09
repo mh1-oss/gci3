@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { products, categories, siteSettings, messages, quotes, quoteItems, projects, subsidiaries, users, loginAttempts } from "@/db/schema";
 import { headers } from "next/headers";
 import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "@/auth";
@@ -209,7 +209,7 @@ export async function updateAdminPassword(formData: FormData) {
 
 // Subsidiaries
 export async function getSubsidiaries() {
-  return await db.select().from(subsidiaries);
+  return await db.select().from(subsidiaries).orderBy(asc(subsidiaries.sortOrder));
 }
 
 export async function createSubsidiary(formData: FormData) {
@@ -217,17 +217,23 @@ export async function createSubsidiary(formData: FormData) {
   
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
+  const slogan = formData.get("slogan") as string;
   const logoUrl = formData.get("logoUrl") as string;
   const logoFile = formData.get("logoFile") as File;
 
   const { url, key, source } = await handleMediaUpdate(logoUrl, logoFile, null, null, "subsidiaries");
 
+  const [maxOrder] = await db.select({ val: subsidiaries.sortOrder }).from(subsidiaries).orderBy(desc(subsidiaries.sortOrder)).limit(1);
+  const nextOrder = maxOrder ? (parseInt(maxOrder.val || "0") + 1).toString() : "0";
+
   await db.insert(subsidiaries).values({
     name,
     description,
+    slogan,
     logoUrl: url,
     logoKey: key,
     logoSource: source,
+    sortOrder: nextOrder,
   });
 
   revalidatePath("/admin/dashboard/subsidiaries");
@@ -240,6 +246,7 @@ export async function updateSubsidiary(id: string, formData: FormData) {
   
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
+  const slogan = formData.get("slogan") as string;
   const logoUrl = formData.get("logoUrl") as string;
   const logoFile = formData.get("logoFile") as File;
 
@@ -257,6 +264,7 @@ export async function updateSubsidiary(id: string, formData: FormData) {
   await db.update(subsidiaries).set({
     name,
     description,
+    slogan,
     logoUrl: url,
     logoKey: key,
     logoSource: source,
@@ -284,6 +292,20 @@ export async function deleteSubsidiary(id: string) {
     console.error("Delete Subsidiary Error:", error);
     return { error: "لا يمكن حذف هذه الشركة لأنها مرتبطة بمنتجات حالياً." };
   }
+}
+
+export async function reorderSubsidiaries(ids: string[]) {
+  await requireAdmin();
+  
+  for (let i = 0; i < ids.length; i++) {
+    await db.update(subsidiaries)
+      .set({ sortOrder: i.toString() })
+      .where(eq(subsidiaries.id, ids[i]));
+  }
+
+  revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/");
+  return { success: true };
 }
 
 // Contact Messages
