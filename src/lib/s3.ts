@@ -16,6 +16,20 @@ const s3Client = new S3Client({
 });
 
 /**
+ * Helper to construct the public URL from a key safely.
+ */
+export function getPublicUrl(key: string | null): string | null {
+  if (!key || !R2_PUBLIC_URL) return null;
+  
+  // Strip trailing slash from base if present
+  const base = R2_PUBLIC_URL.endsWith('/') ? R2_PUBLIC_URL.slice(0, -1) : R2_PUBLIC_URL;
+  // Ensure key doesn't start with a slash
+  const cleanKey = key.startsWith('/') ? key.slice(1) : key;
+  
+  return `${base}/${cleanKey}`;
+}
+
+/**
  * Uploads a file to Cloudflare R2.
  */
 export async function uploadToR2(file: File, folder: string = "general") {
@@ -40,7 +54,7 @@ export async function uploadToR2(file: File, folder: string = "general") {
 
   // Return the public URL and the storage key
   return {
-    url: `${R2_PUBLIC_URL}/${fileName}`,
+    url: getPublicUrl(fileName) || fileName,
     key: fileName,
   };
 }

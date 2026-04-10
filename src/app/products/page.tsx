@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { products, categories, siteSettings, subsidiaries } from "@/db/schema";
 import ProductList from "@/components/products/ProductList";
 import { desc, eq } from "drizzle-orm";
+import { normalizeProduct, normalizeSubsidiary } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
@@ -16,16 +17,18 @@ export default async function ProductsPage({
   const allSettings = await db.select().from(siteSettings).where(eq(siteSettings.id, "main")).limit(1);
   const allSubsidiaries = await db.select().from(subsidiaries).orderBy(desc(subsidiaries.createdAt));
 
+  const normalizedProducts = allProducts.map(normalizeProduct);
+  const normalizedSubsidiaries = allSubsidiaries.map(normalizeSubsidiary);
   const settings = allSettings[0] || { showPrice: "true", showStock: "true" };
   
   return (
     <ProductList 
-      initialProducts={allProducts} 
+      initialProducts={normalizedProducts} 
       dbCategories={allCategories} 
       initialCategory={category} 
       initialSubsidiary={subsidiary}
       settings={settings}
-      subsidiaries={allSubsidiaries}
+      subsidiaries={normalizedSubsidiaries}
     />
   );
 }

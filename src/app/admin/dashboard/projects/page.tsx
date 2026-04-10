@@ -3,11 +3,13 @@ import { projects } from "@/db/schema";
 import { Plus, Image as ImageIcon, Edit2 } from "lucide-react";
 import Link from "next/link";
 import DeleteProjectButton from "@/components/admin/DeleteProjectButton";
+import { normalizeProject } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProjectsPage() {
-  const allProjects = await db.select().from(projects);
+  const result = await db.select().from(projects);
+  const allProjects = result.map(normalizeProject);
 
   return (
     <div className="space-y-6 font-arabic">

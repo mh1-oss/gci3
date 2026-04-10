@@ -252,7 +252,11 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
                     {/* Logo Section */}
                     <div className="w-full h-32 relative flex items-center justify-center mb-6 transition-all duration-500 scale-100 group-hover:scale-110">
                       {sub.logoUrl ? (
-                         <img src={sub.logoUrl} alt={sub.name} className="max-w-full max-h-full object-contain drop-shadow-sm" />
+                         <img 
+                           src={sub.logoUrl} 
+                           alt={sub.name} 
+                           className="max-w-full max-h-full object-contain drop-shadow-sm" 
+                         />
                        ) : (
                          <Building2 className="w-16 h-16 text-gray-100" />
                        )}

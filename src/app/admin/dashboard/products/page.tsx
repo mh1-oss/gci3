@@ -8,6 +8,8 @@ import ProductFilter from "@/components/admin/ProductFilter";
 import ProductSearch from "@/components/admin/ProductSearch";
 import SubsidiaryCell from "@/components/admin/SubsidiaryCell";
 
+import { normalizeProduct, normalizeSubsidiary } from "@/lib/assets";
+
 export const dynamic = "force-dynamic";
 
 interface PageProps {
@@ -67,13 +69,16 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
       price: products.price,
       stock: products.stock,
       imageUrl: products.imageUrl,
+      imageKey: products.imageKey,
       subsidiary: {
         id: subsidiaries.id,
         name: subsidiaries.name,
         description: subsidiaries.description,
         slogan: subsidiaries.slogan,
         logoUrl: subsidiaries.logoUrl,
+        logoKey: subsidiaries.logoKey,
       },
+      createdAt: products.createdAt,
     })
     .from(products)
     .leftJoin(subsidiaries, eq(products.subsidiaryId, subsidiaries.id));
@@ -82,7 +87,11 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
     query.where(and(...conditions));
   }
 
-  const allProducts = await query.orderBy(desc(products.createdAt));
+  const result = await query.orderBy(desc(products.createdAt));
+  const allProducts = result.map((p) => ({
+    ...normalizeProduct(p),
+    subsidiary: p.subsidiary ? normalizeSubsidiary(p.subsidiary) : null,
+  }));
 
   return (
     <div className="space-y-6">

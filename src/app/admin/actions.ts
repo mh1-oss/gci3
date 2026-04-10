@@ -104,16 +104,13 @@ async function handleMediaUpdate(
   // 1. If a NEW file is uploaded, it ALWAYS wins.
   if (uploadFile && uploadFile.size > 0) {
     console.log(`[MediaUpdate] Uploading new file to R2: ${uploadFile.name}`);
-    // Delete old R2 asset if it was stored in R2
     if (currentKey) {
       console.log(`[MediaUpdate] Deleting old key: ${currentKey}`);
       await deleteFromR2(currentKey);
     }
     
-    // Upload new asset
     try {
       const { url, key } = await uploadToR2(uploadFile, folder);
-      console.log(`[MediaUpdate] Upload success: ${url}`);
       return { url, key, source: 'r2' };
     } catch (err) {
       console.error(`[MediaUpdate] Upload failure:`, err);
@@ -121,18 +118,31 @@ async function handleMediaUpdate(
     }
   }
 
-  // 2. If NO new file, but a NEW manual URL is provided that DIFFERS from the current URL
+  // 2. SAFETY CHECK: If we have an existing R2 key, check if the manualUrl is just the public version of it
+  // This prevents accidental deletions during domainMigrations or formatting changes.
+  const isSameR2File = manualUrl && currentKey && manualUrl.includes(currentKey);
+
+  if (isSameR2File) {
+    console.log(`[MediaUpdate] Detected manual URL matches current R2 key. Keeping existing asset.`);
+    return { 
+      url: currentUrl, // Keep existing URL (it will be normalized later anyway)
+      key: currentKey, 
+      source: 'r2' 
+    };
+  }
+
+  // 3. If NO new file, but a NEW manual URL is provided that DIFFERS from the current URL
   if (manualUrl && manualUrl !== currentUrl) {
-    console.log(`[MediaUpdate] Manual URL provided: ${manualUrl}`);
-    // Delete old R2 asset if it was stored in R2 (switching to external)
+    console.log(`[MediaUpdate] Manual URL changed from ${currentUrl} to ${manualUrl}`);
+    // Only delete if we are SURE it's a different asset
     if (currentKey) {
-      console.log(`[MediaUpdate] Deleting old key (switching to external): ${currentKey}`);
+      console.log(`[MediaUpdate] Deleting old R2 asset as user provided a different external URL: ${currentKey}`);
       await deleteFromR2(currentKey);
     }
     return { url: manualUrl, key: null, source: 'external' };
   }
 
-  // 3. No change - keep current
+  // 4. No change - keep current
   return { 
     url: currentUrl, 
     key: currentKey, 
@@ -207,9 +217,12 @@ export async function updateAdminPassword(formData: FormData) {
   return { success: true, message: "تم تحديث كلمة المرور بنجاح" };
 }
 
+import { normalizeSubsidiary, normalizeProduct, normalizeProject } from "@/lib/assets";
+
 // Subsidiaries
 export async function getSubsidiaries() {
-  return await db.select().from(subsidiaries).orderBy(asc(subsidiaries.sortOrder));
+  const result = await db.select().from(subsidiaries).orderBy(asc(subsidiaries.sortOrder));
+  return result.map(normalizeSubsidiary);
 }
 
 export async function createSubsidiary(formData: FormData) {
