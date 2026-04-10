@@ -232,7 +232,8 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
                   className="w-full max-w-[260px] relative group"
                 >
                   <div 
-                    className="relative w-full h-[320px] bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-brand-navy/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-brand-red/10 flex flex-col items-center transform-gpu"
+                    onClick={() => setSelectedSub(sub)}
+                    className="relative w-full h-[320px] bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-xl shadow-brand-navy/5 overflow-hidden transition-all duration-500 hover:shadow-2xl hover:border-brand-red/10 flex flex-col items-center transform-gpu cursor-pointer"
                   >
                     {/* Glass Overlay on Hover */}
                     <motion.div 
@@ -240,13 +241,12 @@ export default function HomeClient({ subsidiaries = [] }: { subsidiaries?: any[]
                       whileHover={{ opacity: 1 }}
                       className="absolute inset-0 bg-brand-navy/5 backdrop-blur-[2px] z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     >
-                      <button 
-                        onClick={() => setSelectedSub(sub)}
+                      <div 
                         className="bg-white/80 backdrop-blur-md border border-white/40 text-brand-navy px-6 py-2.5 rounded-full font-bold shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 hover:bg-brand-red hover:text-white"
                       >
                         <Info className="w-4 h-4" />
                         <span>تفاصيل العلامة</span>
-                      </button>
+                      </div>
                     </motion.div>
 
                     {/* Logo Section */}
