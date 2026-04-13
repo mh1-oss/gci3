@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { db } from "@/db";
 import { products } from "@/db/schema";
 import { Package, AlertTriangle, ArrowUpRight, ArrowDownRight, Edit2 } from "lucide-react";

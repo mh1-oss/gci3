@@ -403,6 +403,7 @@ export async function createQuote(formData: FormData) {
   }
 
   revalidatePath("/admin/dashboard/accounting");
+  revalidatePath("/admin/dashboard/accounting/new");
   revalidatePath("/admin/dashboard/inventory");
   revalidatePath("/products", "layout");
   redirect("/admin/dashboard/accounting");
@@ -432,6 +433,7 @@ export async function deleteProduct(id: string) {
     await db.delete(products).where(eq(products.id, id));
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
+    revalidatePath("/admin/dashboard/accounting/new");
     revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
@@ -510,6 +512,7 @@ export async function createProduct(formData: FormData) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
+    revalidatePath("/admin/dashboard/accounting/new");
     revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
@@ -610,6 +613,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
     revalidatePath("/admin/dashboard/products");
     revalidatePath("/admin/dashboard/inventory");
+    revalidatePath("/admin/dashboard/accounting/new");
     revalidatePath("/products", "layout");
     return { success: true };
   } catch (error) {
@@ -623,6 +627,7 @@ export async function updateStock(productId: string, quantity: string) {
   const cleanQuantity = Math.floor(Number(quantity) || 0).toString();
   await db.update(products).set({ stock: cleanQuantity }).where(eq(products.id, productId));
   revalidatePath("/admin/dashboard/inventory");
+  revalidatePath("/admin/dashboard/accounting/new");
   revalidatePath("/products", "layout");
   return { success: true };
 }
