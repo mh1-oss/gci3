@@ -182,7 +182,7 @@ export default function SearchableSelect({
             </div>
 
             {/* Options List */}
-            <div className="max-h-60 overflow-y-auto py-1 custom-scrollbar">
+            <div className="max-h-80 overflow-y-auto py-1 custom-scrollbar">
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <div

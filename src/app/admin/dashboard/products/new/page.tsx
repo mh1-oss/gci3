@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getSubsidiaries } from "@/app/admin/actions";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";

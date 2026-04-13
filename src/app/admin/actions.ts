@@ -250,6 +250,8 @@ export async function createSubsidiary(formData: FormData) {
   });
 
   revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/admin/dashboard/products/new");
+  revalidatePath("/admin/dashboard/products", "layout");
   revalidatePath("/");
   return { success: true };
 }
@@ -284,6 +286,8 @@ export async function updateSubsidiary(id: string, formData: FormData) {
   }).where(eq(subsidiaries.id, id));
 
   revalidatePath("/admin/dashboard/subsidiaries");
+  revalidatePath("/admin/dashboard/products/new");
+  revalidatePath("/admin/dashboard/products", "layout");
   revalidatePath("/");
   return { success: true };
 }
@@ -299,6 +303,8 @@ export async function deleteSubsidiary(id: string) {
 
     await db.delete(subsidiaries).where(eq(subsidiaries.id, id));
     revalidatePath("/admin/dashboard/subsidiaries");
+    revalidatePath("/admin/dashboard/products/new");
+    revalidatePath("/admin/dashboard/products", "layout");
     revalidatePath("/");
     return { success: true };
   } catch (error) {
@@ -630,6 +636,8 @@ export async function createCategory(formData: FormData) {
   }
 
   revalidatePath("/admin/dashboard/categories");
+  revalidatePath("/admin/dashboard/products/new");
+  revalidatePath("/admin/dashboard/products", "layout");
   redirect("/admin/dashboard/categories");
 }
 
@@ -637,6 +645,8 @@ export async function quickCreateCategory(name: string) {
   await requireAdmin();
   const [newCat] = await db.insert(categories).values({ name }).returning();
   revalidatePath("/admin/dashboard/categories");
+  revalidatePath("/admin/dashboard/products/new");
+  revalidatePath("/admin/dashboard/products", "layout");
   return newCat;
 }
 
@@ -649,7 +659,8 @@ export async function updateCategory(id: string, formData: FormData) {
   }
 
   revalidatePath("/admin/dashboard/categories");
-  revalidatePath("/admin/dashboard/products");
+  revalidatePath("/admin/dashboard/products/new");
+  revalidatePath("/admin/dashboard/products", "layout");
   return { success: true };
 }
 
@@ -658,6 +669,8 @@ export async function deleteCategory(id: string) {
   try {
     await db.delete(categories).where(eq(categories.id, id));
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/admin/dashboard/products/new");
+    revalidatePath("/admin/dashboard/products", "layout");
     return { success: true };
   } catch (error) {
     return { error: "فشل حذف القسم." };
